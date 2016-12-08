@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PackagesMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into ZR_PACKAGES(
+			PRODUCTID,	
+			PACKAGE_NAME,	
+			PACKAGE_PRICE,	
+			BAK30
+		) values (
+			#{PRODUCTID},	
+			#{PACKAGE_NAME},	
+			#{PACKAGE_PRICE},	
+			#{BAK30}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from ZR_PACKAGES
+		where 
+			PACKAGES_ID = #{PACKAGES_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  ZR_PACKAGES
+			set 
+				PRODUCTID = #{PRODUCTID},
+				PACKAGE_NAME = #{PACKAGE_NAME},
+				PACKAGE_PRICE = #{PACKAGE_PRICE},
+				BAK30 = #{BAK30},
+			PACKAGES_ID = PACKAGES_ID
+			where 
+				PACKAGES_ID = #{PACKAGES_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			pa.PRODUCTID,	
+			pa.PACKAGE_NAME,	
+			pa.PACKAGE_PRICE,	
+			pa.BAK30,	
+			pa.PACKAGES_ID,
+			pr.PRODUCTS_ID,
+			pr.PRODUCT_NAME
+		from 
+			ZR_PACKAGES pa, ZR_PRODUCTS pr
+		where pa.PRODUCTID = pr.PRODUCTS_ID
+		<if test="PACKAGES_ID != null and PACKAGES_ID != ''"></if> 
+			and PACKAGES_ID = #{PACKAGES_ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				pa.PRODUCTID,	
+				pa.PACKAGE_NAME,	
+				pa.PACKAGE_PRICE,	
+				pa.BAK30,	
+				pa.PACKAGES_ID,
+				pr.PRODUCTS_ID,
+				pr.PRODUCT_NAME
+		from 
+				ZR_PACKAGES pa, ZR_PRODUCTS pr
+		where pa.PRODUCTID = pr.PRODUCTS_ID
+		and 1 = 1
+		<if test="pd.PRODUCTSID != null and pd.PRODUCTSID !=''">
+			and pr.PRODUCTS_ID = #{pd.PRODUCTSID}
+		</if>
+		<if test="pd.PACKAGE_NAME != null and pd.PACKAGE_NAME != ''">
+			and pa.PACKAGE_NAME LIKE CONCAT(CONCAT('%', #{pd.PACKAGE_NAME}),'%')
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.PRODUCTID,	
+				a.PACKAGE_NAME,	
+				a.PACKAGE_PRICE,	
+				a.BAK30,	
+				a.PACKAGES_ID
+		from 
+				ZR_PACKAGES a 
+		where 1=1 
+		<if test="PRODUCTID != null and PRODUCTID != ''">
+			and a.PRODUCTID=#{PRODUCTID}
+		</if>
+		 order by a.PACKAGES_ID
+	</select>
+	<!-- listAllBean -->
+	<select id="listAllBean" parameterType="pd" resultType="Packages">
+		select
+				a.PRODUCTID,	
+				a.PACKAGE_NAME,	
+				a.PACKAGE_PRICE,	
+				a.BAK30,	
+				a.PACKAGES_ID
+		from 
+				ZR_PACKAGES a 
+		where 1=1 
+		<if test="PRODUCTID != null and PRODUCTID != ''">
+			and a.PRODUCTID=#{PRODUCTS_ID}
+		</if>
+		 
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from ZR_PACKAGES
+		where 
+			PACKAGES_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

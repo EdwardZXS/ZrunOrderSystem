@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrdersMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into ZR_ORDERS(
+			PRODUCTID,	
+			PACKAGEID,	
+			COLOUR,	
+			SIZE,	
+			QUANTITY,	
+			AMOUNT,	
+			CONSIGNEE,	
+			MOBILE,	
+			ADDRESS,	
+			POST_CODE,	
+			ORDER_REMARK,	
+			PAY_MODE,	
+			LOGISTICS,	
+			LOGISTICSNUM,	
+			LAST_MODIFY,	
+			ORDERSTATUS,	
+			INPUTDATE,	
+			BAK40
+		) values (
+			#{PRODUCTID},	
+			#{PACKAGEID},	
+			#{COLOUR},	
+			#{SIZE},	
+			#{QUANTITY},	
+			#{AMOUNT},	
+			#{CONSIGNEE},	
+			#{MOBILE},	
+			#{ADDRESS},	
+			#{POST_CODE},	
+			#{ORDER_REMARK},	
+			#{PAY_MODE},	
+			#{LOGISTICS},	
+			#{LOGISTICSNUM},	
+			#{LAST_MODIFY},	
+			#{ORDERSTATUS},	
+			#{INPUTDATE},	
+			#{BAK40}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from ZR_ORDERS
+		where 
+			ORDERS_ID = #{ORDERS_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  ZR_ORDERS
+			set 
+				PRODUCTID = #{PRODUCTID},
+				PACKAGEID = #{PACKAGEID},
+				COLOUR = #{COLOUR},
+				SIZE = #{SIZE},
+				QUANTITY = #{QUANTITY},
+				AMOUNT = #{AMOUNT},
+				CONSIGNEE = #{CONSIGNEE},
+				MOBILE = #{MOBILE},
+				ADDRESS = #{ADDRESS},
+				POST_CODE = #{POST_CODE},
+				ORDER_REMARK = #{ORDER_REMARK},
+				PAY_MODE = #{PAY_MODE},
+				LOGISTICS = #{LOGISTICS},
+				LOGISTICSNUM = #{LOGISTICSNUM},
+				LAST_MODIFY = #{LAST_MODIFY},
+				ORDERSTATUS = #{ORDERSTATUS},
+			ORDERS_ID = ORDERS_ID
+			where 
+				ORDERS_ID = #{ORDERS_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			PRODUCTID,	
+			PACKAGEID,	
+			COLOUR,	
+			SIZE,	
+			QUANTITY,	
+			AMOUNT,	
+			CONSIGNEE,	
+			MOBILE,	
+			ADDRESS,	
+			POST_CODE,	
+			ORDER_REMARK,	
+			PAY_MODE,	
+			LOGISTICS,	
+			LOGISTICSNUM,	
+			LAST_MODIFY,	
+			ORDERSTATUS,	
+			INPUTDATE,	
+			BAK40,	
+			ORDERS_ID
+		from 
+			ZR_ORDERS
+		where 
+			ORDERS_ID = #{ORDERS_ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.PRODUCTID,	
+				a.PACKAGEID,	
+				a.COLOUR,	
+				a.SIZE,	
+				a.QUANTITY,	
+				a.AMOUNT,	
+				a.CONSIGNEE,	
+				a.MOBILE,	
+				a.ADDRESS,	
+				a.POST_CODE,	
+				a.ORDER_REMARK,	
+				a.PAY_MODE,	
+				a.LOGISTICS,	
+				a.LOGISTICSNUM,	
+				a.LAST_MODIFY,	
+				a.ORDERSTATUS,	
+				a.INPUTDATE,	
+				a.BAK40,	
+				a.ORDERS_ID
+		from 
+				ZR_ORDERS a
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.PRODUCTID,	
+				a.PACKAGEID,	
+				a.COLOUR,	
+				a.SIZE,	
+				a.QUANTITY,	
+				a.AMOUNT,	
+				a.CONSIGNEE,	
+				a.MOBILE,	
+				a.ADDRESS,	
+				a.POST_CODE,	
+				a.ORDER_REMARK,	
+				a.PAY_MODE,	
+				a.LOGISTICS,	
+				a.LOGISTICSNUM,	
+				a.LAST_MODIFY,	
+				a.ORDERSTATUS,	
+				a.INPUTDATE,	
+				a.BAK40,	
+				a.ORDERS_ID
+		from 
+				ZR_ORDERS a
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from ZR_ORDERS
+		where 
+			ORDERS_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProductsMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into ZR_PRODUCTS(
+			MERCHANTID,	
+			USERID,	
+			PRODUCT_NAME,
+			PRODUCT_ANOTHERNAME,
+			PRODUCT_PRICE,
+			PRODUCT_UNIT,
+			PHONE,
+			QQ,
+		  	DISCOUNT,
+		  	SAVE,
+		  	SALE_AMOUNT,
+			ZD_ID,	
+			SIZE,	
+			COLOR,	
+			STOCK,	
+			INPUTDATE,	
+			PRODUCTSTATUS,	
+			PRODUCT_URL,	
+			EXPLAINS,	
+			BAK10
+		) values (
+			#{MERCHANTID},	
+			#{USERID},	
+			#{PRODUCT_NAME},	
+			#{PRODUCT_ANOTHERNAME},
+			#{PRODUCT_PRICE},
+			#{PRODUCT_UNIT},
+			#{PHONE},
+			#{QQ},
+			#{DISCOUNT},
+			#{SAVE},
+			#{SALE_AMOUNT},
+			#{ZD_ID},
+			#{SIZE},	
+			#{COLOR},	
+			#{STOCK},	
+			#{INPUTDATE},	
+			#{PRODUCTSTATUS},	
+			#{PRODUCT_URL},	
+			#{EXPLAINS},	
+			#{BAK10}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from ZR_PRODUCTS
+		where 
+			PRODUCTS_ID = #{PRODUCTS_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  ZR_PRODUCTS
+			set 
+				<if test="MERCHANTID != null and MERCHANTID !=''">
+					MERCHANTID = #{MERCHANTID},
+				</if>
+				<if test="USERID != null and USERID !=''">
+					USERID = #{USERID},
+				</if>
+				<if test="PRODUCT_NAME != null and PRODUCT_NAME !=''">
+					PRODUCT_NAME = #{PRODUCT_NAME},
+				</if>
+				<if test="PRODUCT_ANOTHERNAME != null and PRODUCT_ANOTHERNAME !=''">
+					PRODUCT_ANOTHERNAME = #{PRODUCT_ANOTHERNAME},
+				</if>
+				<if test="PRODUCT_PRICE != null and PRODUCT_PRICE !=''">
+					PRODUCT_PRICE = #{PRODUCT_PRICE},
+				</if>
+				<if test="PRODUCT_UNIT != null and PRODUCT_UNIT !=''">
+					PRODUCT_UNIT = #{PRODUCT_UNIT},
+				</if>
+				<if test="PHONE != null and PHONE !=''">
+					PHONE = #{PHONE},
+				</if>
+				<if test="QQ != null and QQ !=''">
+					QQ = #{QQ},
+				</if>
+				<if test="DISCOUNT != null and DISCOUNT !=''">
+					DISCOUNT = #{DISCOUNT},
+				</if>
+				<if test="SAVE != null and SAVE !=''">
+					SAVE = #{SAVE},
+				</if>
+				<if test="SALE_AMOUNT != null and SALE_AMOUNT !=''">
+					SALE_AMOUNT = #{SALE_AMOUNT},
+				</if>
+				<if test="ZD_ID != null and ZD_ID !=''">
+					ZD_ID = #{ZD_ID},
+				</if>
+				<if test="SIZE != null and SIZE !=''">
+					SIZE = #{SIZE},
+				</if>
+				<if test="COLOR != null and COLOR !=''">
+					COLOR = #{COLOR},
+				</if>
+				<if test="STOCK != null and STOCK !=''">
+					STOCK = #{STOCK},
+				</if>
+				<if test="PRODUCTSTATUS != null and PRODUCTSTATUS !=''">
+					PRODUCTSTATUS = #{PRODUCTSTATUS},
+				</if>
+				<if test="EXPLAINS != null and EXPLAINS !=''">
+					EXPLAINS = #{EXPLAINS},
+				</if>
+				<if test="PRODUCT_URL != null and PRODUCT_URL !=''">
+					PRODUCT_URL = #{PRODUCT_URL},
+				</if>
+			PRODUCTS_ID = PRODUCTS_ID
+			where 
+				PRODUCTS_ID = #{PRODUCTS_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			MERCHANTID,	
+			USERID,	
+			PRODUCT_NAME,	
+			PRODUCT_ANOTHERNAME,	
+			PRODUCT_PRICE,	
+			PRODUCT_UNIT,	
+			PHONE,	
+			QQ,	
+			DISCOUNT,	
+			SAVE,	
+			SALE_AMOUNT,	
+			ZD_ID,	
+			SIZE,	
+			COLOR,	
+			STOCK,	
+			INPUTDATE,	
+			PRODUCTSTATUS,	
+			PRODUCT_URL,	
+			EXPLAINS,	
+			BAK10,	
+			PRODUCTS_ID
+		from 
+			ZR_PRODUCTS
+		where 
+			PRODUCTS_ID = #{PRODUCTS_ID}
+	</select>
+	
+	<!-- 通过ID获取数据+商户信息的 -->
+	<select id="findByIdAndM" parameterType="pd" resultType="pd">
+		select 
+			p.MERCHANTID,	
+			p.USERID,	
+			p.PRODUCT_NAME,	
+			p.PRODUCT_ANOTHERNAME,	
+			p.PRODUCT_PRICE,	
+			p.PRODUCT_UNIT,	
+			p.PHONE,	
+			p.QQ,	
+			p.DISCOUNT,	
+			p.SAVE,	
+			p.SALE_AMOUNT,	
+			p.ZD_ID,	
+			p.SIZE,	
+			p.COLOR,	
+			p.STOCK,	
+			p.INPUTDATE,	
+			p.PRODUCTSTATUS,	
+			p.PRODUCT_URL,	
+			p.EXPLAINS,	
+			p.BAK10,
+			m.MERCHANT_NAME,	
+			p.PRODUCTS_ID
+		from 
+			ZR_PRODUCTS p
+		JOIN ZR_MERCHANT m on p.MERCHANTID=m.MERCHANT_ID 
+		where 
+			PRODUCTS_ID = #{PRODUCTS_ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				p.MERCHANTID,	
+				p.USERID,	
+				p.PRODUCT_NAME,	
+				p.PRODUCT_ANOTHERNAME,	
+				p.PRODUCT_PRICE,	
+				p.PRODUCT_UNIT,	
+				p.PHONE,	
+				p.QQ,	
+				p.DISCOUNT,	
+				p.SAVE,	
+				p.SALE_AMOUNT,	
+				p.ZD_ID,	
+				p.SIZE,	
+				p.COLOR,	
+				p.STOCK,	
+				p.INPUTDATE,	
+				p.PRODUCTSTATUS,	
+				p.PRODUCT_URL,	
+				p.EXPLAINS,	
+				p.BAK10,	
+				p.PRODUCTS_ID,
+				m.MERCHANT_NAME,
+				u.NAME UNAME,
+				d.NAME DNAME
+		from 
+				ZR_PRODUCTS p,ZR_MERCHANT m,SYS_USER u,SYS_DICTIONARIES d
+		where p.MERCHANTID = m.MERCHANT_ID and p.USERID = u.USER_ID and p.ZD_ID = d.ZD_ID
+		and 1 = 1
+		<if test="pd.PRODUCT_NAME != null and pd.PRODUCT_NAME != ''">
+			and p.PRODUCT_NAME LIKE CONCAT(CONCAT('%', #{pd.PRODUCT_NAME}),'%')
+		</if>
+		<if test="pd.PRODUCTSTATUS != null and pd.PRODUCTSTATUS != ''">
+			and p.PRODUCTSTATUS = #{pd.PRODUCTSTATUS}
+		</if>
+		<if test="pd.lastLoginStart!=null and pd.lastLoginStart!=''"><!-- 登录时间检索 -->
+			and p.INPUTDATE &gt;= #{pd.lastLoginStart} 
+		</if>
+		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
+			and p.INPUTDATE &lt;= #{pd.lastLoginEnd} 
+		</if>
+		
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.MERCHANTID,	
+				a.USERID,	
+				a.PRODUCT_NAME,	
+				a.PRODUCT_ANOTHERNAME,	
+				a.PRODUCT_PRICE,	
+				a.PRODUCT_UNIT,	
+				a.PHONE,	
+				a.QQ,	
+				a.DISCOUNT,	
+				a.SAVE,	
+				a.SALE_AMOUNT,	
+				a.ZD_ID,	
+				a.SIZE,	
+				a.COLOR,	
+				a.STOCK,	
+				a.INPUTDATE,	
+				a.PRODUCTSTATUS,	
+				a.PRODUCT_URL,	
+				a.EXPLAINS,	
+				a.BAK10,	
+				a.PRODUCTS_ID
+		from 
+				ZR_PRODUCTS a 
+		where 1=1 
+		<if test="MERCHANTID != null and MERCHANTID !=''">
+			a.MERCHANTID=#{MERCHANTID}
+		</if>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from ZR_PRODUCTS
+		where 
+			PRODUCTS_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>

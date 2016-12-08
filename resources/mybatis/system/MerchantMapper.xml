@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MerchantMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into ZR_MERCHANT(
+			MERCHANT_NAME,	
+			MERCHANT_LINKMAN,	
+			MERCHANT_PHONE,	
+			MERCHANT_ADDRESS,	
+			MERCHANT_QQ,	
+			USERID,	
+			INPUTDATE,	
+			MERCHANTSTATUS,	
+			EXPLAINS,	
+			BAK1
+		) values (
+			#{MERCHANT_NAME},	
+			#{MERCHANT_LINKMAN},	
+			#{MERCHANT_PHONE},	
+			#{MERCHANT_ADDRESS},	
+			#{MERCHANT_QQ},	
+			#{USERID},	
+			#{INPUTDATE},	
+			#{MERCHANTSTATUS},	
+			#{EXPLAINS},	
+			#{BAK1}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from ZR_MERCHANT
+		where 
+			MERCHANT_ID = #{MERCHANT_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  ZR_MERCHANT
+			set 
+				<if test="MERCHANT_NAME != null and MERCHANT_NAME != ''">
+					MERCHANT_NAME = #{MERCHANT_NAME}
+				</if>
+				<if test="MERCHANT_LINKMAN != null and MERCHANT_LINKMAN != ''">
+					,MERCHANT_LINKMAN = #{MERCHANT_LINKMAN}
+				</if>
+				<if test="MERCHANT_PHONE != null and MERCHANT_PHONE != ''">
+					,MERCHANT_PHONE = #{MERCHANT_PHONE}
+				</if>
+				<if test="MERCHANT_ADDRESS != null and MERCHANT_ADDRESS != ''">
+					,MERCHANT_ADDRESS = #{MERCHANT_ADDRESS}
+				</if>
+				<if test="MERCHANT_QQ != null and MERCHANT_QQ != ''">
+					,MERCHANT_QQ = #{MERCHANT_QQ}
+				</if>
+				<if test="USERID != null and USERID != ''">
+					,USERID = #{USERID}
+				</if>
+				<if test="MERCHANTSTATUS != null and MERCHANTSTATUS != ''">
+					,MERCHANTSTATUS = #{MERCHANTSTATUS}
+				</if>
+				<if test="EXPLAINS != null and EXPLAINS != ''">
+					,EXPLAINS = #{EXPLAINS},
+				</if>
+			MERCHANT_ID = MERCHANT_ID
+			where 
+				MERCHANT_ID = #{MERCHANT_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			MERCHANT_NAME,	
+			MERCHANT_LINKMAN,	
+			MERCHANT_PHONE,	
+			MERCHANT_ADDRESS,	
+			MERCHANT_QQ,	
+			USERID,	
+			INPUTDATE,	
+			MERCHANTSTATUS,	
+			EXPLAINS,	
+			BAK1,	
+			MERCHANT_ID
+		from 
+			ZR_MERCHANT
+		where 
+			<if test="MERCHANT_ID != null and MERCHANT_ID !=''">
+				 MERCHANT_ID = #{MERCHANT_ID}
+			</if>
+			<if test="MERCHANTID != null and MERCHANTID !=''">
+				 MERCHANT_ID = #{MERCHANTID}
+			</if>
+	</select>
+	<!-- 通过ID获取数据 -->
+	<select id="findMerchById" parameterType="string" resultType="pd">
+		select 
+			MERCHANT_NAME,	
+			MERCHANT_LINKMAN,	
+			MERCHANT_PHONE,	
+			MERCHANT_ADDRESS,	
+			MERCHANT_QQ,	
+			USERID,	
+			INPUTDATE,	
+			MERCHANTSTATUS,	
+			EXPLAINS,	
+			BAK1,	
+			MERCHANT_ID
+		from 
+			ZR_MERCHANT
+		where 
+			<if test="merchId != null and merchId !=''">
+				 MERCHANT_ID = #{merchId}
+			</if>
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				m.MERCHANT_NAME,	
+				m.MERCHANT_LINKMAN,	
+				m.MERCHANT_PHONE,	
+				m.MERCHANT_ADDRESS,	
+				m.MERCHANT_QQ,	
+				m.USERID,	
+				m.INPUTDATE,	
+				m.MERCHANTSTATUS,	
+				m.EXPLAINS,	
+				m.BAK1,	
+				m.MERCHANT_ID,
+				u.USER_ID,
+				u.NAME
+		from 
+				ZR_MERCHANT m,SYS_USER u
+		where m.USERID = u.USER_ID
+		and 1 = 1
+		<if test="pd.MERCHANT_NAME != null and pd.MERCHANT_NAME != ''">
+			and m.MERCHANT_NAME LIKE CONCAT(CONCAT('%', #{pd.MERCHANT_NAME}),'%')
+		</if>
+		<if test="pd.MERCHANTSTATUS != null and pd.MERCHANTSTATUS != ''">
+			and m.MERCHANTSTATUS = #{pd.MERCHANTSTATUS} 
+		</if>
+		<!-- 
+			<if test="pd.MERCHANT_LINKMAN != null and pd.MERCHANT_LINKMAN != ''">
+				and m.pd.MERCHANT_LINKMAN LIKE CONCAT(CONCAT('%', #{pd.pd.MERCHANT_LINKMAN}),'%')
+			</if> 
+		-->
+		<if test="pd.lastLoginStart!=null and pd.lastLoginStart!=''"><!-- 登录时间检索 -->
+			and m.INPUTDATE &gt;= #{pd.lastLoginStart} 
+		</if>
+		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
+			and m.INPUTDATE &lt;= #{pd.lastLoginEnd} 
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.MERCHANT_NAME,	
+				a.MERCHANT_LINKMAN,	
+				a.MERCHANT_PHONE,	
+				a.MERCHANT_ADDRESS,	
+				a.MERCHANT_QQ,	
+				a.USERID,	
+				a.INPUTDATE,	
+				a.MERCHANTSTATUS,	
+				a.EXPLAINS,	
+				a.BAK1,	
+				a.MERCHANT_ID
+		from 
+				ZR_MERCHANT a 
+		where 1=1 
+		<if test="MERCHANT_ID != null and MERCHANT_ID !=''">
+			<![CDATA[
+			 and a.MERCHANT_ID = #{MERCHANT_ID} 
+			 ]]>
+		</if>
+		
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from ZR_MERCHANT
+		where 
+			MERCHANT_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+</mapper>
