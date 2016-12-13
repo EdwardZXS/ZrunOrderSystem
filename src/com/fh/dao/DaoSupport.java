@@ -10,8 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.fh.util.PageData;
-
 @Repository("daoSupport")
 public class DaoSupport implements DAO {
 
@@ -123,7 +121,7 @@ public class DaoSupport implements DAO {
 	public Object findForMap(String str, Object obj, String key, String value) throws Exception {
 		return sqlSessionTemplate.selectMap(str, obj, key);
 	}
-
+	
 }
 
 

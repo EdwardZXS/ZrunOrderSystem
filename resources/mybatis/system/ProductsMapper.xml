@@ -4,7 +4,7 @@
 	
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="pd">
+	<insert id="save" parameterType="pd" keyProperty="PRODUCTS_ID">
 		insert into ZR_PRODUCTS(
 			MERCHANTID,	
 			USERID,	
@@ -213,10 +213,12 @@
 				m.MERCHANT_NAME,
 				u.NAME UNAME,
 				d.NAME DNAME
-		from 
-				ZR_PRODUCTS p,ZR_MERCHANT m,SYS_USER u,SYS_DICTIONARIES d
-		where p.MERCHANTID = m.MERCHANT_ID and p.USERID = u.USER_ID and p.ZD_ID = d.ZD_ID
-		and 1 = 1
+		FROM
+		ZR_PRODUCTS p
+		LEFT JOIN ZR_MERCHANT m ON p.MERCHANTID = m.MERCHANT_ID
+		LEFT JOIN SYS_USER u ON u.USER_ID = p.USERID
+		LEFT JOIN SYS_DICTIONARIES d ON d.ZD_ID = p.ZD_ID
+		where 1 = 1
 		<if test="pd.PRODUCT_NAME != null and pd.PRODUCT_NAME != ''">
 			and p.PRODUCT_NAME LIKE CONCAT(CONCAT('%', #{pd.PRODUCT_NAME}),'%')
 		</if>
@@ -229,7 +231,6 @@
 		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and p.INPUTDATE &lt;= #{pd.lastLoginEnd} 
 		</if>
-		
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -260,7 +261,17 @@
 				ZR_PRODUCTS a 
 		where 1=1 
 		<if test="MERCHANTID != null and MERCHANTID !=''">
-			a.MERCHANTID=#{MERCHANTID}
+			and a.MERCHANTID=#{MERCHANTID}
+		</if>
+		<if test="PRODUCT_NAME != null and PRODUCT_NAME != ''">
+			and a.PRODUCT_NAME LIKE CONCAT(CONCAT('%', #{PRODUCT_NAME}),'%')
+		</if>
+		<if test="PRODUCT_ANOTHERNAME != null and PRODUCT_ANOTHERNAME != ''">
+			and a.PRODUCT_ANOTHERNAME = #{PRODUCT_ANOTHERNAME}
+			and a.MERCHANTID=#{MERCHANTID}
+		</if>
+		<if test="PRODUCTSTATUS != null and PRODUCTSTATUS !=''">
+			and a.PRODUCTSTATUS=#{PRODUCTSTATUS}
 		</if>
 	</select>
 	

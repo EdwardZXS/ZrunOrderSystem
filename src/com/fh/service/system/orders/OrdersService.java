@@ -1,13 +1,21 @@
 package com.fh.service.system.orders;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
+import com.fh.entity.system.User;
+import com.fh.util.Const;
+import com.fh.util.DateUtil2;
 import com.fh.util.PageData;
 
 
@@ -20,10 +28,17 @@ public class OrdersService {
 	/*
 	* 新增
 	*/
-	public void save(PageData pd)throws Exception{
+	@Transactional
+	public synchronized void save(PageData pd)throws Exception{
+		//生成订单编号
+		pd.put("ORDERS_NUMBER",DateUtil2.getObject());
 		dao.save("OrdersMapper.save", pd);
+		//修改购买人数+销量
+		PageData pdPr=(PageData)dao.findForObject("ProductsMapper.findById", pd);
+		int sum= Integer.parseInt(pdPr.get("SALE_AMOUNT").toString())+Integer.parseInt(pd.get("QUANTITY").toString());
+		pdPr.put("SALE_AMOUNT", sum);
+		dao.update("ProductsMapper.edit", pdPr);
 	}
-	
 	/*
 	* 删除
 	*/

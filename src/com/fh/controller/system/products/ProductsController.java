@@ -1,7 +1,7 @@
 package com.fh.controller.system.products;
 
+import java.io.File;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,27 +16,33 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
-import com.fh.util.AppUtil;
-import com.fh.util.ObjectExcelView;
-import com.fh.util.Const;
-import com.fh.util.PageData;
-import com.fh.util.Tools;
-import com.fh.util.Jurisdiction;
+import com.fh.entity.system.User;
 import com.fh.service.system.dictionaries.DictionariesService;
+import com.fh.service.system.imgs.ImgsService;
 import com.fh.service.system.merchant.MerchantService;
 import com.fh.service.system.products.ProductsService;
 import com.fh.service.system.user.UserService;
+import com.fh.util.AppUtil;
+import com.fh.util.Const;
+import com.fh.util.DateUtil;
+import com.fh.util.FileUpload;
+import com.fh.util.Jurisdiction;
+import com.fh.util.ObjectExcelView;
+import com.fh.util.PageData;
+import com.fh.util.PathUtil;
 
 /** 
  * 类名称：ProductsController
@@ -56,6 +62,35 @@ public class ProductsController extends BaseController {
 	private MerchantService merchantService;
 	@Resource(name = "userService")
 	private UserService userService;
+	@Resource(name = "imgsService")
+	private ImgsService imgsService;
+	
+	
+	/**
+	 * 检验别名是否重复
+	 */
+	@RequestMapping(value="ajaxCheckAName")
+	public @ResponseBody String ajaxCheckAName(@RequestParam("prAName") String prAName) {
+		PageData apd = new PageData();
+		apd.put("PRODUCT_ANOTHERNAME", prAName);
+		Map<String, String> result = new HashMap<String, String>();
+		try{
+			List<PageData> proList = productsService.listAll(apd);
+			for (PageData pageData : proList) {
+				if(prAName.equals(pageData.getString("PRODUCT_ANOTHERNAME"))){// 别名有重复
+					result.put("RESULT", "NO");
+					return JSONUtils.toJSONString(result);
+				}else {
+					result.put("RESULT", "YES");
+					return JSONUtils.toJSONString(result);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * 新增
 	 */
@@ -66,20 +101,40 @@ public class ProductsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		HttpServletRequest request = this.getRequest();
+		// 获取路径
+		String realPath = request.getRealPath("");
+		String dirName = DateUtil.getDays();
 		// 算出节省 用原价减去现销售价
 		double save = Double.parseDouble(pd.getString("PRODUCT_PRICE")) - Double.parseDouble(pd.getString("PRODUCT_UNIT"));
+		// 获取文件的别名，用于
+		String PRODUCT_ANOTHERNAME = pd.getString("PRODUCT_ANOTHERNAME");
+		// 获取图片的上传路径
+		String filePath = pd.getString("filePath");
+		File file = new File(filePath);
+		PageData filePd = imgsService.findById(pd);
+		// 从临时存储到指定目录
+		String newFileName = FileUpload.fileUp((MultipartFile)file, realPath + "/" + Const.FILEPATHIMG2 + "/" + dirName + "/", PRODUCT_ANOTHERNAME);
+		String newFilePath= Const.FILEPATHIMG2+"/"+dirName+"/"+newFileName;
 		// 获取商户的QQ和手机
 		PageData merchant = merchantService.findById(pd);
+		pd.put("PRODUCT_URL", PathUtil.PathAddress()+"html/product/"+pd.getString("PRODUCT_ANOTHERNAME")+".html");
 		pd.put("PHONE", merchant.getString("MERCHANT_PHONE"));
 		pd.put("QQ", merchant.getString("MERCHANT_QQ"));
 		pd.put("SAVE", save);// 节省
 		pd.put("INPUTDATE", new Date());	//输入日期
-		pd.put("PRODUCT_URL", "");	//静态页面地址
 		pd.put("PRODUCTSTATUS", 1);
 		pd.put("BAK10", "");	//备注预留字段
 		productsService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
+		
+		// 保存图片相关信息
+		String PRODUCTS_ID = pd.getString("PRODUCTS_ID");// 获取新增商品的ID
+		filePd.put("PRODUCTID", PRODUCTS_ID);
+		filePd.put("PATH",newFilePath);
+		imgsService.save(filePd);
+		
 		return mv;
 	}
 	
@@ -128,15 +183,23 @@ public class ProductsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		// shiro管理的session
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		List<PageData> varList;
 		try{
+			if(user.getBZ() == 1){//商户1：北京中润 全部查询
+				
+			}else{
+				pd.put("MERCHANTID", user.getBZ());
+			}
 			page.setPd(pd);
-			List<PageData>	varList = productsService.list(page);	//列出Products列表
-			// String PRODUCT_ANOTHERNAME = pd.getString("PRODUCT_ANOTHERNAME");// 查询回显
+			varList = productsService.list(page);
 			mv.setViewName("system/products/products_list");
 			mv.addObject("varList", varList);
 			mv.addObject("pd", pd);
 			mv.addObject(Const.SESSION_QX,this.getHC());	//按钮权限
-			// mv.addObject("QUERY_PRODUCT_ANOTHERNAME", PRODUCT_ANOTHERNAME);
 		} catch(Exception e){
 			logger.error(e.toString(), e);
 		}
@@ -152,10 +215,13 @@ public class ProductsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		PageData pddiction = new PageData();
+		pddiction.put("PARENT_ID", "d39e791f50b64fbe93a4d8d0d85fdb57");
 		try {
 			List<PageData> merchList = merchantService.listAll(pd);
 			List<PageData> userList = userService.listAllUser(pd);
-			List<PageData> dictList = dictionariesService.dictlistPage(page);
+			// List<PageData> dictList = dictionariesService.dictlistPage(page);
+			List<PageData> dictList = dictionariesService.ListAllDict(pddiction);
 			mv.setViewName("system/products/products_edit");
 			mv.addObject("msg", "save");
 			mv.addObject("pd", pd);
@@ -177,11 +243,13 @@ public class ProductsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		PageData pddiction = new PageData();
+		pddiction.put("PARENT_ID", "d39e791f50b64fbe93a4d8d0d85fdb57");
 		try {
 			pd = productsService.findById(pd);	//根据ID读取
 			List<PageData> merchList = merchantService.listAll(pd);
 			List<PageData> userList = userService.listAllUser(pd);
-			List<PageData> dictList = dictionariesService.ListAllDict(pd);
+			List<PageData> dictList = dictionariesService.ListAllDict(pddiction);
 			mv.setViewName("system/products/products_edit");
 			mv.addObject("msg", "edit");
 			mv.addObject("pd", pd);

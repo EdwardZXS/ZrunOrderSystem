@@ -104,7 +104,6 @@
 										<td>${var.DNAME}</td>
 										<td>${var.SIZE}</td>
 										<td>${var.COLOR}</td>
-										<%-- <td>${var.STOCK}</td> --%>
 										<td>${var.INPUTDATE}</td>
 										<td>
 											<c:if test="${var.PRODUCTSTATUS == 1 }">未生成</c:if>
@@ -112,6 +111,7 @@
 											<c:if test="${var.PRODUCTSTATUS == 3 }">下架</c:if>
 										</td>
 										<td>${var.PRODUCT_URL}</td>
+										<%-- <td><a href="${var.PRODUCT_URL}">点击查看</a></td> --%>
 										<td><a href="packages/list.do?PRODUCTSID=${var.PRODUCTS_ID }">套餐管理</a></td>
 								<td style="width: 30px;" class="center">
 									<div class='hidden-phone visible-desktop btn-group'>
@@ -130,18 +130,6 @@
 											<li><a style="cursor:pointer;" title="删除" onclick="del('${var.PRODUCTS_ID}');" class="tooltip-error" data-rel="tooltip" title="" data-placement="left"><span class="red"><i class="icon-trash"></i></span> </a></li>
 										</ul>
 										</div>
-										<%-- <div class="inline position-relative">
-										<button class="btn btn-mini btn-info" data-toggle="dropdown"><i class="icon-cog icon-only"></i></button>
-										<ul class="dropdown-menu dropdown-icon-only dropdown-light pull-right dropdown-caret dropdown-close">
-											<c:if test="${QX.edit == 1 }">
-											<li><a style="cursor:pointer;" title="编辑" onclick="edit('${var.PRODUCTS_ID}');" class="tooltip-success" data-rel="tooltip" title="" data-placement="left"><span class="green"><i class="icon-edit"></i></span></a></li>
-											<li><a style="cursor:pointer;" title="生成静态" onclick="tohtml('${var.PRODUCTS_ID}');" class="tooltip-success" data-rel="tooltip" title="" data-placement="left"><span class="green"><i class="icon-ok"></i></span></a></li>
-											</c:if>
-											<c:if test="${QX.del == 1 }">
-											<li><a style="cursor:pointer;" title="删除" onclick="del('${var.PRODUCTS_ID}');" class="tooltip-error" data-rel="tooltip" title="" data-placement="left"><span class="red"><i class="icon-trash"></i></span> </a></li>
-											</c:if>
-										</ul>
-										</div> --%>
 									</div>
 								</td>
 							</tr>
@@ -226,7 +214,7 @@
 			 diag.Title ="新增";
 			 diag.URL = '<%=basePath%>products/goAdd.do';
 			 diag.Width = 700;
-			 diag.Height = 600;
+			 diag.Height = 700;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
@@ -255,7 +243,7 @@
 		}
 		//生成html
 		function tohtml(Id){
-		//alert('<%=basePath%>productsAddHtml/htmlProducts.do?PRODUCTS_ID='+Id);
+		
 		var url = "<%=basePath%>productsAddHtml/htmlProducts.do?PRODUCTS_ID="+Id;
 			top.jzts();
 			$.get(url,function(data){
@@ -270,7 +258,7 @@
 			 diag.Title ="编辑";
 			 diag.URL = '<%=basePath%>products/goEdit.do?PRODUCTS_ID='+Id;
 			 diag.Width = 700;
-			 diag.Height = 600;
+			 diag.Height = 700;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage(${page.currentPage});

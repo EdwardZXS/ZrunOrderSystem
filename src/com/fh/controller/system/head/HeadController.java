@@ -146,7 +146,7 @@ public class HeadController extends BaseController {
 		
 		List<PageData> pdList = new ArrayList<PageData>();
 		
-		String PHONEs = pd.getString("PHONE");					//对方邮箱
+		String PHONEs = pd.getString("PHONE");					//对方
 		String CONTENT = pd.getString("CONTENT");				//内容
 		String isAll = pd.getString("isAll");					//是否发送给全体成员 yes or no
 		String TYPE = pd.getString("TYPE");						//类型 1：短信接口1   2：短信接口2
@@ -340,9 +340,10 @@ public class HeadController extends BaseController {
 		
 		if(null != strSMS1 && !"".equals(strSMS1)){
 			String strS1[] = strSMS1.split(",fh,");
-			if(strS1.length == 2){
+			if(strS1.length == 3){
 				pd.put("SMSU1", strS1[0]);
 				pd.put("SMSPAW1", strS1[1]);
+				pd.put("SMSURLS", strS1[2]);
 			}
 		}
 		
@@ -401,7 +402,7 @@ public class HeadController extends BaseController {
 		Tools.writeFile(Const.SYSNAME,pd.getString("YSYNAME"));	//写入系统名称
 		Tools.writeFile(Const.PAGE,pd.getString("COUNTPAGE"));	//写入每页条数
 		Tools.writeFile(Const.EMAIL,pd.getString("SMTP")+",fh,"+pd.getString("PORT")+",fh,"+pd.getString("EMAIL")+",fh,"+pd.getString("PAW"));	//写入邮件服务器配置
-		Tools.writeFile(Const.SMS1,pd.getString("SMSU1")+",fh,"+pd.getString("SMSPAW1"));	//写入短信1配置
+		Tools.writeFile(Const.SMS1,pd.getString("SMSU1")+",fh,"+pd.getString("SMSPAW1")+",fh,"+pd.getString("SMSURLS"));	//写入短信1配置
 		Tools.writeFile(Const.SMS2,pd.getString("SMSU2")+",fh,"+pd.getString("SMSPAW2"));	//写入短信2配置
 		mv.addObject("msg","OK");
 		mv.setViewName("save_result");

@@ -155,7 +155,7 @@
             swf: './Uploader.swf',
             chunked: false,
             chunkSize: 512 * 1024,
-            //server: 'http://127.0.0.1:8080/pictures/save.do',
+            // server: 'http://127.0.0.1:8080/imgs/save.do',
             server: locat+'/pictures/save.do',
             //runtimeOrder: 'flash',
 

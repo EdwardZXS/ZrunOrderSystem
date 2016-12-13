@@ -21,10 +21,12 @@
 	<div id="zhongxin"></div>
 	<script type="text/javascript">
 		var msg = "${msg}";
+		var msgs = "${msgs}";
 		if(msg=="success" || msg==""){
 			document.getElementById('zhongxin').style.display = 'none';
 			top.Dialog.close();
 		}else{
+			alert(msgs);
 			top.Dialog.close();
 		}
 	</script>

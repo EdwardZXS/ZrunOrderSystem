@@ -30,62 +30,53 @@ public class SmsUtil {
 	
 	public static void main(String [] args) {
 		
-		sendSms2("13511111111","您的验证码是：1111。请不要把验证码泄露给其他人。");
+		//sendSms2("13511111111","11111");
 		//sendSmsAll(List<PageData> list)
 		
-		//sendSms1();
+		sendSms1("18911024602", "验证码为：ssss");
 	}
 	
 	
 	
 
 	 //短信商 一  http://www.dxton.com/ =====================================================================================
-	/**
-	 * 给一个人发送单条短信
-	 * @param mobile 手机号
-	 * @param code  短信内容
-	 */
- 	public static void sendSms1(String mobile,String code){
- 		
-	    String account = "", password = "";
+		/**
+		 * 给一个人发送单条短信
+		 * @param mobile 手机号
+		 * @param code  短信内容
+		 */
+ 	public static String sendSms1(String mobile,String code){
+ 		String str="";
+	    String account = "", password = "", urls = "";
 	    String strSMS1 = Tools.readTxtFile(Const.SMS1);			//读取短信1配置
 		if(null != strSMS1 && !"".equals(strSMS1)){
 			String strS1[] = strSMS1.split(",fh,");
-			if(strS1.length == 2){
+			if(strS1.length == 3){
 				account = strS1[0];
 				password = strS1[1];
+				urls = strS1[2];
 			}
 		}
  		String PostData = "";
 		try {
-			PostData = "account="+account+"&password="+password+"&mobile="+mobile+"&content="+URLEncoder.encode(code,"utf-8");
+			password=MD5.md5(password).toLowerCase();
+			String msg=URLEncoder.encode(code,"GBK");
+			PostData = "user="+account+"&password="+password+"&tele="+mobile+"&msg="+msg;
+			
 		} catch (UnsupportedEncodingException e) {
 			System.out.println("短信提交失败");
 		}
 		 //System.out.println(PostData);
- 	     String ret = SMS(PostData, "http://sms.106jiekou.com/utf8/sms.aspx");
+ 	     String ret = SMS(PostData, urls);
+ 	 
  	     System.out.println(ret);
- 	   /*  
- 	   100			发送成功
- 	   101			验证失败
- 	   102			手机号码格式不正确
- 	   103			会员级别不够
- 	   104			内容未审核
- 	   105			内容过多
- 	   106			账户余额不足
- 	   107			Ip受限
- 	   108			手机号码发送太频繁，请换号或隔天再发
- 	   109			帐号被锁定
- 	   110			发送通道不正确
- 	   111			当前时间段禁止短信发送
- 	   120			系统升级
-		*/
- 	     
+ 	    
+ 	    return ret;
 	}
 	
 	 public static String SMS(String postData, String postUrl) {
 	        try {
-	            //发送POST请求
+	        	//发送POST请求
 	            URL url = new URL(postUrl);
 	            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 	            conn.setRequestMethod("POST");
@@ -95,19 +86,19 @@ public class SmsUtil {
 	            conn.setDoOutput(true);
 
 	            conn.setRequestProperty("Content-Length", "" + postData.length());
-	            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+	            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "GBK");
 	            out.write(postData);
 	            out.flush();
 	            out.close();
 
-	            //获取响应状态
+	          //获取响应状态
 	            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 	                System.out.println("connect failed!");
 	                return "";
 	            }
 	            //获取响应内容体
 	            String line, result = "";
-	            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+	            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "GBK"));
 	            while ((line = in.readLine()) != null) {
 	                result += line + "\n";
 	            }
@@ -121,12 +112,13 @@ public class SmsUtil {
 	 //===================================================================================================================
 	 
 	 
-	/**
-	 * 
-	 * 短信商 二  http://www.ihuyi.com/ =====================================================================================
-	 * 
-	 */
-	private static String Url = "http://106.ihuyi.com/webservice/sms.php?method=Submit";
+	 /**
+		 * 
+		 * 短信商 二  http://www.ihuyi.com/ =====================================================================================
+		 * 
+		 */
+	//private static String Url = "http://106.ihuyi.com/webservice/sms.php?method=Submit";
+	private static String Url = "http://58.83.147.92:8080/qxt/smssenderv2";
 	
 	
 	

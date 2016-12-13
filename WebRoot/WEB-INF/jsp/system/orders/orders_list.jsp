@@ -28,14 +28,12 @@
 				<tr>
 					<td>
 						<span class="input-icon">
-							<input autocomplete="off" id="nav-search-input" type="text" name="CONSIGNEE" value="${pd.CONSIGNEE}" placeholder="这里输入收货人姓名" />
-							<i id="nav-search-icon" class="icon-search"></i>
+							<input autocomplete="off" id="nav-search-input" type="text" name="CONSIGNEE" value="${pd.CONSIGNEE}" placeholder="这里输入姓名" />
 						</span>
 					</td>
 					<td>
 						<span class="input-icon">
-							<input autocomplete="off" id="nav-search-input" type="text" name="MOBILE" value="${pd.MOBILE}" placeholder="这里输入收货人手机号" />
-							<i id="nav-search-icon" class="icon-search"></i>
+							<input autocomplete="off" id="nav-search-input" type="text" name="MOBILE" value="${pd.MOBILE}" placeholder="这里输入手机号" />
 						</span>
 					</td>
 					<td><input class="span10 date-picker" name="lastLoginStart" id="lastLoginStart" value="${pd.lastLoginStart}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期"/></td>
@@ -55,10 +53,11 @@
 							<option value="">全部</option>
 							<option value="1" <c:if test="${pd.ORDERSTATUS eq '1' }"> selected="selected" </c:if>>未确认单</option>
 							<option value="2" <c:if test="${pd.ORDERSTATUS eq '2' }"> selected="selected" </c:if>>正在出库</option>
-							<option value="3" <c:if test="${pd.ORDERSTATUS eq '3' }"> selected="selected" </c:if>>已收货</option>
-							<option value="4" <c:if test="${pd.ORDERSTATUS eq '4' }"> selected="selected" </c:if>>退货</option>
-							<option value="5" <c:if test="${pd.ORDERSTATUS eq '5' }"> selected="selected" </c:if>>拒收</option>
-							<option value="6" <c:if test="${pd.ORDERSTATUS eq '6' }"> selected="selected" </c:if>>取消</option>
+							<option value="3" <c:if test="${pd.ORDERSTATUS eq '3' }"> selected="selected" </c:if>>已发货</option>
+							<option value="4" <c:if test="${pd.ORDERSTATUS eq '4' }"> selected="selected" </c:if>>已收货</option>
+							<option value="5" <c:if test="${pd.ORDERSTATUS eq '5' }"> selected="selected" </c:if>>退货</option>
+							<option value="6" <c:if test="${pd.ORDERSTATUS eq '6' }"> selected="selected" </c:if>>拒收</option>
+							<option value="7" <c:if test="${pd.ORDERSTATUS eq '7' }"> selected="selected" </c:if>>取消</option>
 					  	</select>
 					</td>
 					<td style="vertical-align:top;"><button class="btn btn-mini btn-light" onclick="search();"  title="检索"><i id="nav-search-icon" class="icon-search"></i></button></td>
@@ -77,18 +76,19 @@
 						<th class="center">
 						<label><input type="checkbox" id="zcheckbox" /><span class="lbl"></span></label>
 						</th>
+						<th class="center">订单编号</th>
 						<th class="center">产品名称</th>
 						<th class="center">套餐名</th>
 						<th class="center">颜色</th>
 						<th class="center">尺码</th>
 						<th class="center">件数</th>
-						<th class="center">订单总额</th>
+						<th class="center">订单总额(元)</th>
 						<th class="center">收货人</th>
 						<th class="center">手机号</th>
 						<th class="center">地址</th>
 						<th class="center">备注</th>
-						<!-- <th class="center">支付方式</th> -->
-						<th class="center">选择物流</th>
+						<!-- <th class="center">支付方式</th> 
+						<th class="center">选择物流</th>-->
 						<th class="center">状态</th>
 						<th class="center">下单日期</th>
 						<th class="center">操作</th>
@@ -106,7 +106,8 @@
 								<td class='center' style="width: 30px;">
 									<label><input type='checkbox' name='ids' value="${var.ORDERS_ID}" /><span class="lbl"></span></label>
 								</td>
-								<td>${var.PRODUCT_NAME}</td>
+										<td>${var.ORDERS_NUMBER}</td>
+										<td>${var.PRODUCT_NAME}</td>
 										<td>${var.PACKAGENAME}</td>
 										<td>${var.COLOR}</td>
 										<td>${var.SIZE}</td>
@@ -118,15 +119,16 @@
 										<td>${var.ORDER_REMARK}</td>
 										<%-- <td>
 											<c:if test="${var.PAY_MODE eq 1}">货到付款</c:if>
-										</td> --%>
-										<td>${var.LOGISTICS}</td>
+										</td> 
+										<td>${var.LOGISTICS}</td>--%>
 										<td>
 											<c:if test="${var.ORDERSTATUS eq 1}">未确认单</c:if>
 											<c:if test="${var.ORDERSTATUS eq 2}">已确认正在出库</c:if>
-											<c:if test="${var.ORDERSTATUS eq 3}">已收货</c:if>
-											<c:if test="${var.ORDERSTATUS eq 4}">退货</c:if>
-											<c:if test="${var.ORDERSTATUS eq 5}">拒收</c:if>
-											<c:if test="${var.ORDERSTATUS eq 6}">取消</c:if>
+											<c:if test="${var.ORDERSTATUS eq 3}">已发货</c:if>
+											<c:if test="${var.ORDERSTATUS eq 4}">已收货</c:if>
+											<c:if test="${var.ORDERSTATUS eq 5}">退货</c:if>
+											<c:if test="${var.ORDERSTATUS eq 6}">拒收</c:if>
+											<c:if test="${var.ORDERSTATUS eq 7}">取消</c:if>
 										</td>
 										<td>${var.INPUTDATE}</td>
 								<td style="width: 30px;" class="center">
@@ -229,8 +231,8 @@
 			 diag.Drag=true;
 			 diag.Title ="新增";
 			 diag.URL = '<%=basePath%>orders/goAdd.do';
-			 diag.Width = 450;
-			 diag.Height = 355;
+			 diag.Width = 750;
+			 diag.Height = 700;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
@@ -265,8 +267,8 @@
 			 diag.Drag=true;
 			 diag.Title ="编辑";
 			 diag.URL = '<%=basePath%>orders/goEdit.do?ORDERS_ID='+Id;
-			 diag.Width = 450;
-			 diag.Height = 355;
+			 diag.Width = 750;
+			 diag.Height = 700;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage(${page.currentPage});

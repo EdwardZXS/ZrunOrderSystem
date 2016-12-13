@@ -127,6 +127,9 @@
 				<td><input type="text" name="BIANMA" id="BIANMA" placeholder="这里输入编码" value="${pd.BIANMA }" title="编码"/></td>
 			</tr>
 			<tr class="info">
+				<td><input type="text" name="DVALUES" id="DVALUES" placeholder="这里输入值" value="${pd.DVALUES }" title="值"/></td>
+			</tr>
+			<tr class="info">
 				<td><input type="number" name="ORDY_BY" id="ORDY_BY" placeholder="这里输入序号" value="${pd.ORDY_BY}" title="序号"/></td>
 			</tr>
 			<tr>

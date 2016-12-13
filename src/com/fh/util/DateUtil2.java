@@ -10,6 +10,7 @@ package com.fh.util;
  * @version 1.0
  */
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -239,7 +240,14 @@ public class DateUtil2 {
 		}
 		return returnTimeStamp;
 	}
-
+	/**
+	 * 生成订单号
+	 */
+	public static long counter = 0;
+	 public synchronized static String getObject() throws Exception {
+	        String sequ = new DecimalFormat("00000000").format(counter ++);
+	        return  getNowTimeStamp()+sequ;
+	    }
 	/**
 	 *得到格式化后的系统当前日期
 	 *@param strScheme 格式模式字符串

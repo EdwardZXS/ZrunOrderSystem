@@ -4,8 +4,9 @@
 	
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="pd">
+	<insert id="save" parameterType="pd" useGeneratedKeys="true" keyProperty="ORDERS_ID">
 		insert into ZR_ORDERS(
+			ORDERS_NUMBER,	
 			PRODUCTID,	
 			PACKAGEID,	
 			PACKAGENAME,	
@@ -26,8 +27,10 @@
 			INPUTDATE,	
 			IP,	
 			MERCHANTID,	
+			CHANNELS_ID,	
 			BAK40
 		) values (
+			#{ORDERS_NUMBER},	
 			#{PRODUCTID},	
 			#{PACKAGEID},	
 			#{PACKAGENAME},	
@@ -48,6 +51,7 @@
 			#{INPUTDATE},	
 			#{IP},	
 			#{MERCHANTID},	
+			#{CHANNELS_ID},	
 			#{BAK40}
 		)
 	</insert>
@@ -65,25 +69,66 @@
 	<update id="edit" parameterType="pd">
 		update  ZR_ORDERS
 			set 
+			<if test="PRODUCTID != null and PRODUCTID !=''">
 				PRODUCTID = #{PRODUCTID},
+			</if>
+			<if test="PACKAGEID != null and PACKAGEID !=''">
 				PACKAGEID = #{PACKAGEID},
+			</if>
+			<if test="PACKAGENAME != null and PACKAGENAME !=''">
 				PACKAGENAME = #{PACKAGENAME},
+			</if>
+			<if test="COLOR != null and COLOR !=''">
 				COLOR = #{COLOR},
+			</if>
+			<if test="SIZE != null and SIZE !=''">
 				SIZE = #{SIZE},
+			</if>
+			<if test="QUANTITY != null and QUANTITY !=''">
 				QUANTITY = #{QUANTITY},
+			</if>
+			<if test="AMOUNT != null and AMOUNT !=''">
 				AMOUNT = #{AMOUNT},
+			</if>
+			<if test="CONSIGNEE != null and CONSIGNEE !=''">
 				CONSIGNEE = #{CONSIGNEE},
+			</if>
+			<if test="MOBILE != null and MOBILE !=''">
 				MOBILE = #{MOBILE},
+			</if>
+			<if test="ADDRESS != null and ADDRESS !=''">
 				ADDRESS = #{ADDRESS},
+			</if>
+			<if test="POST_CODE != null and POST_CODE !=''">
 				POST_CODE = #{POST_CODE},
+			</if>
+			<if test="ORDER_REMARK != null and ORDER_REMARK !=''">
 				ORDER_REMARK = #{ORDER_REMARK},
+			</if>
+			<if test="PAY_MODE != null and PAY_MODE !=''">
 				PAY_MODE = #{PAY_MODE},
+			</if>
+			<if test="LOGISTICS != null and LOGISTICS !=''">
 				LOGISTICS = #{LOGISTICS},
+			</if>
+			<if test="LOGISTICSNUM != null and LOGISTICSNUM !=''">
 				LOGISTICSNUM = #{LOGISTICSNUM},
+			</if>
+			<if test="LAST_MODIFY != null and LAST_MODIFY !=''">
 				LAST_MODIFY = #{LAST_MODIFY},
+			</if>
+			<if test="ORDERSTATUS != null and ORDERSTATUS !=''">
 				ORDERSTATUS = #{ORDERSTATUS},
+			</if>
+			<if test="IP != null and IP !=''">
 				IP = #{IP},
+			</if>
+			<if test="MIDS != null and MIDS !=''">
+				MIDS = #{MIDS},
+			</if>
+			<if test="MERCHANTID != null and MERCHANTID !=''">
 				MERCHANTID = #{MERCHANTID},
+			</if>
 			ORDERS_ID = ORDERS_ID
 			where 
 				ORDERS_ID = #{ORDERS_ID}
@@ -114,6 +159,7 @@
 			BAK40,	
 			IP,	
 			MERCHANTID,	
+			MIDS,	
 			ORDERS_ID
 		from 
 			ZR_ORDERS
@@ -125,6 +171,7 @@
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
+				a.ORDERS_NUMBER,	
 				a.PRODUCTID,	
 				a.PACKAGEID,	
 				a.PACKAGENAME,	
@@ -146,6 +193,7 @@
 				a.BAK40,	
 				a.MERCHANTID,	
 				a.IP,	
+				a.MIDS,	
 				p.PRODUCT_NAME,
 				a.ORDERS_ID
 		from 
@@ -162,23 +210,24 @@ JOIN zr_products p on p.PRODUCTS_ID=a.PRODUCTID
 			and a.PRODUCTID=#{pd.PRODUCTID}
 		</if>
 		<if test="pd.ORDERSTATUS != null and pd.ORDERSTATUS !=''">
-			and a.MOBILE=#{pd.ORDERSTATUS}
+			and a.ORDERSTATUS=#{pd.ORDERSTATUS}
 		</if>
 		<if test="pd.MERCHANTID != null and pd.MERCHANTID !=''">
 			and a.MERCHANTID=#{pd.MERCHANTID}
 		</if>
 		<if test="pd.lastLoginStart!=null and pd.lastLoginStart!=''"><!-- 登录时间检索 -->
-			and and substr(a.INPUTDATE,1,10) &gt;= #{pd.lastLoginStart} 
+			and substr(a.INPUTDATE,1,10) &gt;= #{pd.lastLoginStart} 
 		</if>
 		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and substr(a.INPUTDATE,1,10) &lt;= #{pd.lastLoginEnd} 
 		</if>
-		
+		order by a.ORDERS_ID desc 
 	</select>
 	
 	<!-- 列表(全部) -->
 	<select id="listAll" parameterType="pd" resultType="pd">
 		select
+				a.ORDERS_NUMBER,	
 				a.PRODUCTID,	
 				a.PACKAGEID,	
 				a.PACKAGENAME,	
@@ -200,9 +249,11 @@ JOIN zr_products p on p.PRODUCTS_ID=a.PRODUCTID
 				a.BAK40,	
 				a.MERCHANTID,	
 				a.IP,	
+				a.MIDS,	
 				a.ORDERS_ID
 		from 
-				ZR_ORDERS a
+				ZR_ORDERS a 
+		 order by a.ORDERS_ID desc 
 	</select>
 	
 	<!-- 批量删除 -->

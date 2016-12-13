@@ -1,1 +1,1 @@
-username,fh,password
+spdd,fh,spdd123,fh,http://58.83.147.92:8080/qxt/smssenderv2

@@ -60,12 +60,12 @@ public class PackagesController extends BaseController {
 	public ModelAndView save() throws Exception{
 		logBefore(logger, "新增Packages");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
-		ModelAndView mv = new ModelAndView("packages/list.do");
+		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String PRODUCTID = pd.getString("PRODUCTID");
-		mv.addObject("PRODUCTID", PRODUCTID);
 		packagesService.save(pd);
+		mv.addObject("msg","success");
+		mv.setViewName("save_result");
 		return mv;
 	}
 	

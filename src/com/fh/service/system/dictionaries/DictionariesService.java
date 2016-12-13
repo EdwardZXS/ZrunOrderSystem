@@ -58,6 +58,10 @@ public class DictionariesService{
 		// TODO Auto-generated method stub
 		return (List<PageData>) dao.findForList("DictionariesMapper.listAllDict",pd);
 	}
+	public List<PageData> ListAllDict2(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (List<PageData>) dao.findForList("DictionariesMapper.listAllDict2",pd);
+	}
 
 	
 	
