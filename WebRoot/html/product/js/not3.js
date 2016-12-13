@@ -10,7 +10,20 @@
 
 
 function postcheck(){ 	
-
+	urlinfo=window.location.href; //获取当前页面的url 
+	len=urlinfo.length;//获取url的长度 
+	offset=urlinfo.indexOf("?");//设置参数字符串开始的位置 
+	newsidinfo=urlinfo.substr(offset,len)//取出参数字符串 这里会获得类似“id=1”这样的字符串 
+	newsids=newsidinfo.split("=");//对获得的参数字符串按照“=”进行分割 
+	newsid=newsids[1];//得到参数值 
+	if(newsid != "" && newsid !=undefined){
+		alert("您要传递的参数值是"+newsid);
+		document.getElementById("CHANNELS_ID").value=newsid;
+	}else{
+		alert("您要传递的参数值是"+newsid);
+	}
+	
+	
  try{
      var yanse = document.getElementsByName("COLOR");
      if (yanse.length != 0){

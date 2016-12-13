@@ -95,6 +95,10 @@
 						<td style="width:50px;text-align: right;padding-top: 13px;">密码:</td>
 						<td><input type="password" name="SMSPAW1" id="SMSPAW1" value="${pd.SMSPAW1 }" placeholder="请输入密码" style="width:90%" title="密码"/></td>
 					</tr>
+					<tr>	
+						<td style="width:50px;text-align: right;padding-top: 13px;">URL:</td>
+						<td colspan="3"><input type="SMSURLS" name="SMSURLS" id="SMSURLS" value="${pd.SMSURLS }" placeholder="请输入URL" style="width:90%" title="URL"/></td>
+					</tr>
 					<tr>
 						<td style="text-align: center;" colspan="100">
 							短信接口&nbsp;(短信商二&nbsp;<a href="http://www.ihuyi.com/" target="_blank">官网</a>)

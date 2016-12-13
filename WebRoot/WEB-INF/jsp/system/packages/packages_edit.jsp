@@ -76,6 +76,7 @@
 		$("#zhongxin").hide();
 		$("#zhongxin2").show();
 	}
+		window.close();
 	
 </script>
 	</head>
@@ -88,6 +89,8 @@
 			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">产品名称:</td>
 				<td><input type="text" name="PRODUCT_NAME" id="PRODUCT_NAME" value="${pd.PRODUCT_NAME}" maxlength="32" placeholder="" title="产品名称" readonly="readonly"/></td>
+			</tr>
+			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">套餐名称:</td>
 				<td><input type="text" name="PACKAGE_NAME" id="PACKAGE_NAME" value="${pd.PACKAGE_NAME}" maxlength="32" placeholder="这里输入名称" title="名称"/></td>
 			</tr>

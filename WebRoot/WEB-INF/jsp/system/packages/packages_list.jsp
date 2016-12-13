@@ -37,6 +37,9 @@
 					<td style="vertical-align:top;"><a class="btn btn-mini btn-light" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="icon-download-alt"></i></a></td>
 					</c:if>
 				</tr>
+				<tr>
+					<td><a href="products/list.do">返回商品列表</a></td>
+				</tr>
 			</table>
 			<!-- 检索  -->
 		
@@ -63,6 +66,7 @@
 					<c:when test="${not empty varList}">
 						<c:if test="${QX.cha == 1 }">
 						<c:forEach items="${varList}" var="var" varStatus="vs">
+							<input type="hidden" name="PRODUCTSID" id="PRODUCTSID" value="${var.PRODUCTID}"/>
 							<tr>
 								<td class='center' style="width: 30px;">
 									<label><input type='checkbox' name='ids' value="${var.PACKAGES_ID}" /><span class="lbl"></span></label>
@@ -160,8 +164,24 @@
 		
 		//检索
 		function search(){
-			top.jzts();
-			$("#Form").submit();
+			if($("#nav-search-input").val()==""){
+				$("#nav-search-input").tips({
+					side:3,
+		            msg:'请输入检索内容',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#nav-search-input").focus();
+				return false;
+			}else {
+				$("#Form").submit();
+				$("#zhongxin").hide();
+				$("#zhongxin2").show();
+			}	
+		}
+		
+		function toList(){
+			window.location.href='<%=basePath%>products/list.do';
 		}
 		
 		//新增
@@ -208,7 +228,7 @@
 			 diag.Title ="编辑";
 			 diag.URL = '<%=basePath%>packages/goEdit.do?PACKAGES_ID='+Id;
 			 diag.Width = 700;
-			 diag.Height = 160;
+			 diag.Height = 220;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage(${page.currentPage});

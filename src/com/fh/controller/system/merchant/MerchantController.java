@@ -115,18 +115,23 @@ public class MerchantController extends BaseController {
 		PageData pd = new PageData();
 		try{
 			pd = this.getPageData();
+			// shiro管理的session
+			Subject currentUser = SecurityUtils.getSubject();
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(Const.SESSION_USER);
+			if(user.getBZ() == 1){//商户1：北京中润 全部查询
+				
+			}else{
+				pd.put("MERCHANT_ID", user.getBZ());
+			}
 			page.setPd(pd);
 			List<PageData>	varList = merchantService.list(page);	//列出Merchant列表
 			List<PageData> userList = userService.listAllUser(pd);  // 列出User列表
-			// String MERCHANT_NAME = pd.getString("MERCHANT_NAME");	// 查询回显
-			// String MERCHANTSTATUS = pd.getString("MERCHANTSTATUS");
 			mv.setViewName("system/merchant/merchant_list");
 			mv.addObject("varList", varList);
 			mv.addObject("userList", userList);
 			mv.addObject("pd", pd);
 			mv.addObject(Const.SESSION_QX,this.getHC());	//按钮权限
-			// mv.addObject("QUERY_MERCHANT_NAME",MERCHANT_NAME);
-			// mv.addObject("QUERY_MERCHANTSTATUS",MERCHANTSTATUS);
 		} catch(Exception e){
 			logger.error(e.toString(), e);
 		}

@@ -44,28 +44,28 @@
 		update  ZR_MERCHANT
 			set 
 				<if test="MERCHANT_NAME != null and MERCHANT_NAME != ''">
-					MERCHANT_NAME = #{MERCHANT_NAME}
+					MERCHANT_NAME = #{MERCHANT_NAME},
 				</if>
 				<if test="MERCHANT_LINKMAN != null and MERCHANT_LINKMAN != ''">
-					,MERCHANT_LINKMAN = #{MERCHANT_LINKMAN}
+					MERCHANT_LINKMAN = #{MERCHANT_LINKMAN},
 				</if>
 				<if test="MERCHANT_PHONE != null and MERCHANT_PHONE != ''">
-					,MERCHANT_PHONE = #{MERCHANT_PHONE}
+					MERCHANT_PHONE = #{MERCHANT_PHONE},
 				</if>
 				<if test="MERCHANT_ADDRESS != null and MERCHANT_ADDRESS != ''">
-					,MERCHANT_ADDRESS = #{MERCHANT_ADDRESS}
+					MERCHANT_ADDRESS = #{MERCHANT_ADDRESS},
 				</if>
 				<if test="MERCHANT_QQ != null and MERCHANT_QQ != ''">
-					,MERCHANT_QQ = #{MERCHANT_QQ}
+					MERCHANT_QQ = #{MERCHANT_QQ},
 				</if>
 				<if test="USERID != null and USERID != ''">
-					,USERID = #{USERID}
+					USERID = #{USERID},
 				</if>
 				<if test="MERCHANTSTATUS != null and MERCHANTSTATUS != ''">
-					,MERCHANTSTATUS = #{MERCHANTSTATUS}
+					MERCHANTSTATUS = #{MERCHANTSTATUS},
 				</if>
 				<if test="EXPLAINS != null and EXPLAINS != ''">
-					,EXPLAINS = #{EXPLAINS},
+					EXPLAINS = #{EXPLAINS},
 				</if>
 			MERCHANT_ID = MERCHANT_ID
 			where 
@@ -136,21 +136,19 @@
 				m.MERCHANT_ID,
 				u.USER_ID,
 				u.NAME
-		from 
-				ZR_MERCHANT m,SYS_USER u
-		where m.USERID = u.USER_ID
-		and 1 = 1
+		FROM
+		ZR_MERCHANT m
+		LEFT JOIN	SYS_USER u ON u.USER_ID = m.USERID
+		WHERE  1 = 1
+		<if test="pd.MERCHANT_ID != null and pd.MERCHANT_ID != ''">
+			and m.MERCHANT_ID = #{pd.MERCHANT_ID} 
+		</if>
 		<if test="pd.MERCHANT_NAME != null and pd.MERCHANT_NAME != ''">
 			and m.MERCHANT_NAME LIKE CONCAT(CONCAT('%', #{pd.MERCHANT_NAME}),'%')
 		</if>
 		<if test="pd.MERCHANTSTATUS != null and pd.MERCHANTSTATUS != ''">
 			and m.MERCHANTSTATUS = #{pd.MERCHANTSTATUS} 
 		</if>
-		<!-- 
-			<if test="pd.MERCHANT_LINKMAN != null and pd.MERCHANT_LINKMAN != ''">
-				and m.pd.MERCHANT_LINKMAN LIKE CONCAT(CONCAT('%', #{pd.pd.MERCHANT_LINKMAN}),'%')
-			</if> 
-		-->
 		<if test="pd.lastLoginStart!=null and pd.lastLoginStart!=''"><!-- 登录时间检索 -->
 			and m.INPUTDATE &gt;= #{pd.lastLoginStart} 
 		</if>

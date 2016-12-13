@@ -20,10 +20,12 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,10 +37,14 @@ import com.fh.util.DateUtil2;
 import com.fh.util.ObjectExcelView;
 import com.fh.util.Const;
 import com.fh.util.PageData;
+import com.fh.util.SmsUtil;
 import com.fh.util.Tools;
 import com.fh.util.Jurisdiction;
+import com.fh.service.system.dictionaries.DictionariesService;
 import com.fh.service.system.orders.OrdersService;
+import com.fh.service.system.packages.PackagesService;
 import com.fh.service.system.products.ProductsService;
+import com.google.gson.Gson;
 
 /** 
  * 类名称：OrdersController
@@ -54,13 +60,17 @@ public class OrdersController extends BaseController {
 	private OrdersService ordersService;
 	@Resource(name="productsService")
 	private ProductsService productsService;
+	@Resource(name="packagesService")
+	private PackagesService packagesService;
+	@Resource(name="dictionariesService")
+	private DictionariesService dictionariesService;
 	
 	/**
-	 * 新增
+	 * html新增
 	 */
 	@RequestMapping(value="/save")
-	public void save(HttpServletResponse response) throws Exception{
-		logBefore(logger, "新增Orders");
+	public synchronized void save(HttpServletResponse response) throws Exception{
+		logBefore(logger, "html新增Orders");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -97,16 +107,55 @@ public class OrdersController extends BaseController {
 		//pd.put("ORDERS_ID", this.get32UUID());	//主键
 		pd.put("INPUTDATE", DateUtil2.getNowDateTime());	//录入日期
 		pd.put("LAST_MODIFY", DateUtil2.getNowDateTime());	//录入日期
-		pd.put("ORDERSTATUS",1);	//状态1:下单未确认 2:已确认正在出库 3:已收货 4:退货 5:拒收
+		pd.put("ORDERSTATUS",1);	//状态1:下单未确认 2:已确认正在出库 3:已发货 4:已收货 5:退货 6拒收 7取消
 		//HOUR_OF_DAY  这是小时
+		//pd.put("BAK40", DateUtil2.getTimeStamp("yyyy-MM-dd HH:mm:ss",DateUtil2.getDateFromNow(Calendar.DAY_OF_YEAR, 1, "yyyy-MM-dd HH:mm:ss")));	//有效时间戳+1天（24小时）
 		pd.put("BAK40", DateUtil2.getDateFromNow(Calendar.DAY_OF_YEAR, 1, "yyyy-MM-dd HH:mm:ss"));	//有效时间戳+1天（24小时）
 		
+		StringBuffer sbaddress=new StringBuffer();
+		sbaddress.append(pd.get("province").toString());
+		sbaddress.append(pd.get("city").toString());
+		sbaddress.append(pd.get("area").toString());
+		sbaddress.append(pd.get("ADDRESS").toString());
+		pd.put("ADDRESS", sbaddress.toString());
 		ordersService.save(pd);
 		
 		/**
-		 * 短信
+		 * 短信验证发送
 		 */
-		
+		//1.先查询是否短信确认订单开启
+		PageData pddiction = new PageData();
+		pddiction.put("ZD_ID", "e2426bac58984776a56c21fdc136b9e2");
+		pddiction = dictionariesService.findById(pddiction);
+		if(pddiction.get("DVALUES").toString().equals("1")){
+			
+			//查询要显示的内容
+			pddiction = new PageData();
+			pddiction.put("ZD_ID", "aa7c4fb55ceb486ba73541f79e028a73");
+			pddiction = dictionariesService.findById(pddiction);
+			/**
+			 * 短信内容签名
+			 */
+			//查询是否发货短信开启
+			/*pddiction.put("ZD_ID", "27a3f302d50e436e95607017560fdc85");
+			pddiction = dictionariesService.findById(pddiction);
+			String sbstr = pddiction.getString("DVALUES");*/
+			////////////////////////////////////////////////////////////////////////////////
+			//替换文字
+			String sbstr = pddiction.getString("DVALUES");
+			sbstr = sbstr.replaceAll("#PRODUCTS", pd.getString("PRODUCT_NAME"));
+			
+			String str = SmsUtil.sendSms1(pd.getString("MOBILE"), sbstr);		//调用发短信函数1
+			logBefore(logger, "*****短信发送状态："+str);
+			if(str.indexOf("ok") != -1){
+				String str2[]=str.split(":");
+				pd.put("MIDS", str2[1]);
+			}else{
+				pd.put("MIDS", str);
+			}
+			ordersService.edit(pd);
+			
+		}
 		
 		
 		
@@ -116,6 +165,41 @@ public class OrdersController extends BaseController {
 		//String url="../"+Const.HTMLPATH+pd.getString("PRODUCT_ANOTHERNAME")+".html";//这是跳转回产品页面
 		String url="../"+Const.HTMLPATH+"success.html";
 		response.sendRedirect(url);
+	}
+	/**
+	 * jsp新增
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/saveJSP")
+	public synchronized ModelAndView saveJSP() throws Exception{
+		logBefore(logger, "jsp新增Orders");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = null;
+		pd = this.getPageData();
+		
+		//套餐拆分
+		String packages[]=pd.get("PACKAGES_ID").toString().split("-");
+		pd.put("PACKAGEID",packages[0]);
+		pd.put("PACKAGENAME",packages[1]);
+		
+		//查询属商户
+		pd.put("PRODUCTS_ID",pd.get("PRODUCTID"));
+		PageData pdm = productsService.findById(pd);
+		pd.put("MERCHANTID", pdm.get("MERCHANTID"));
+		
+		pd.put("IP", "127.0.0.1");//用户ip
+		pd.put("INPUTDATE", DateUtil2.getNowDateTime());	//录入日期
+		pd.put("LAST_MODIFY", DateUtil2.getNowDateTime());	//录入日期
+		//pd.put("ORDERSTATUS",2);	//状态1:下单未确认 2:已确认正在出库 3:已发货 4:已收货 5:退货 6拒收 7取消
+		//HOUR_OF_DAY  这是小时
+		pd.put("BAK40", DateUtil2.getDateFromNow(Calendar.DAY_OF_YEAR, 1, "yyyy-MM-dd HH:mm:ss"));	//有效时间戳+1天（24小时）
+		
+		ordersService.save(pd);
+		
+		mv.addObject("msg","success");
+		mv.setViewName("save_result");
+		return mv;
 	}
 	
 	/**
@@ -147,7 +231,61 @@ public class OrdersController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		//套餐拆分
+		String packages[]=pd.get("PACKAGES_ID").toString().split("-");
+		pd.put("PACKAGEID",packages[0]);
+		pd.put("PACKAGENAME",packages[1]);
+		
+		//查询属商户
+		pd.put("PRODUCTS_ID",pd.get("PRODUCTID"));
+		PageData pdm = productsService.findById(pd);
+		pd.put("MERCHANTID", pdm.get("MERCHANTID"));
+				
+		pd.put("LAST_MODIFY", DateUtil2.getNowDateTime());	//修改日期
+		
 		ordersService.edit(pd);
+		
+		/**
+		 * 如果等于“已发货”则发送短信提示
+		 */
+		if(pd.get("ORDERSTATUS").toString().equals("3")){
+			
+			//查询是否发货短信开启
+			PageData pddiction = new PageData();
+			pddiction.put("ZD_ID", "d4ecbd73a4ad46c2a0cc77f8deb674fb");
+			pddiction = dictionariesService.findById(pddiction);
+			if(pddiction.get("DVALUES").toString().equals("1")){
+				
+				//查询要显示的内容
+				pddiction = new PageData();
+				pddiction.put("ZD_ID", "b45d87c51b0347998dd834b114afc46c");
+				pddiction = dictionariesService.findById(pddiction);
+				/**
+				 * 短信内容签名
+				 */
+				//查询是否发货短信开启
+				/*pddiction.put("ZD_ID", "27a3f302d50e436e95607017560fdc85");
+				pddiction = dictionariesService.findById(pddiction);
+				String sbstr = pddiction.getString("DVALUES");*/
+				
+				//替换文字
+				String sbstr = pddiction.getString("DVALUES");
+				//sbstr = sbstr.replaceAll("#PRODUCTS", pd.getString("PRODUCT_NAME"));
+				String str = SmsUtil.sendSms1(pd.getString("MOBILE"), sbstr);		//调用发短信函数1
+				logBefore(logger, "*****短信发送状态："+str);
+				if(str.indexOf("ok") != -1){
+					String str2[]=str.split(":");
+					String smg=pd.get("MIDS").toString()+";"+str2[1];
+					pd.put("MIDS", smg);
+				}else{
+					String smg=pd.get("MIDS").toString()+";"+str;
+					pd.put("MIDS", smg);
+				}
+				ordersService.edit(pd);
+			}
+			
+		}
+		
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
@@ -205,14 +343,86 @@ public class OrdersController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
+			
+			/*查询产品
+			 * 如果是平台则都能看到否则只能看到本商户订单
+			 */
+			// shiro管理的session
+			Subject currentUser = SecurityUtils.getSubject();
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(Const.SESSION_USER);
+			if(user.getBZ() != 1){//商户1：北京中润 全部查询
+				pd.put("MERCHANTID", user.getBZ());
+			}
+			pd.put("PRODUCTSTATUS", 2);//1：未生成 2：正常3：下架
+			List<PageData>	productList = productsService.listAll(pd);//产品列表
+			
+			
 			mv.setViewName("system/orders/orders_edit");
-			mv.addObject("msg", "save");
+			mv.addObject("msg", "saveJSP");
 			mv.addObject("pd", pd);
+			mv.addObject("productList", productList);
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}						
 		return mv;
 	}	
+	
+	/**
+	 * ajax产品的自己
+	 */
+	@RequestMapping(value="/ajaxProduct")
+	@ResponseBody
+	public String ajaxProduct(@RequestParam("prId") String prId) {
+		PageData apd = new PageData();
+		apd.put("PRODUCTS_ID",prId);
+		try {
+			PageData products = productsService.findById(apd);
+			Gson g=new Gson();
+			return g.toJson(products);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * ajax产品的套餐
+	 */
+	@RequestMapping(value="/ajaxPackages")
+	@ResponseBody
+	public String ajaxPackages(@RequestParam("prId") String prId) {
+		PageData apd = new PageData();
+		apd.put("PRODUCTID",prId);
+		try {
+			List<PageData>	adList = packagesService.listAll(apd);
+			Gson g=new Gson();
+			return g.toJson(adList);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * ajax套餐自身
+	 */
+	@RequestMapping(value="/ajaxPackagesId")
+	@ResponseBody
+	public String ajaxPackagesId(@RequestParam("paId") String paId) {
+		PageData apd = new PageData();
+		String paId2[]=paId.split("-");
+		apd.put("PACKAGES_ID",paId2[0]);
+		try {
+			PageData adList = packagesService.findById(apd);
+			Gson g=new Gson();
+			return g.toJson(adList);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	/**
 	 * 去修改页面
@@ -224,10 +434,34 @@ public class OrdersController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
+			
 			pd = ordersService.findById(pd);	//根据ID读取
+			/*查询产品
+			 * 如果是平台则都能看到否则只能看到本商户订单
+			 */
+			// shiro管理的session
+			Subject currentUser = SecurityUtils.getSubject();
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(Const.SESSION_USER);
+			PageData pd1 = new PageData();
+			if(user.getBZ() != 1){//商户1：北京中润 全部查询
+				pd1.put("MERCHANTID", user.getBZ());
+			}
+			
+			pd1.put("PRODUCTSTATUS", 2);//1：未生成 2：正常3：下架
+			List<PageData>	productList = productsService.listAll(pd1);//产品列表
+			PageData pd2 = new PageData();
+			pd2.put("PRODUCTID", pd.get("PRODUCTID"));
+			List<PageData>	packageList = packagesService.listAll(pd2);//套餐列表
+			
+			
+			
+			
 			mv.setViewName("system/orders/orders_edit");
 			mv.addObject("msg", "edit");
 			mv.addObject("pd", pd);
+			mv.addObject("productList", productList);
+			mv.addObject("packageList", packageList);
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}						

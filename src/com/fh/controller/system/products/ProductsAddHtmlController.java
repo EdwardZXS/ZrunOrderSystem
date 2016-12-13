@@ -182,9 +182,12 @@ public class ProductsAddHtmlController extends BaseController {
 			root.put("STOCK", pd.get("STOCK"));//库存
 			root.put("EXPLAINS", pd.get("EXPLAINS"));//抢购描述
 			root.put("BAK10", pd.get("BAK10"));//订单描述
-			root.put("SIZE", pd.get("SIZE"));//
-			root.put("COLOR", pd.get("COLOR"));//
-			
+			if(pd.get("SIZE") != null && !pd.get("SIZE").toString().equals("")){
+				root.put("SIZE", pd.get("SIZE"));//
+			}
+			if(pd.get("COLOR") != null && !pd.get("COLOR").toString().equals("")){
+				root.put("COLOR", pd.get("COLOR"));//
+			}
 			
 			/*String path = getRequest().getContextPath();
 			String basePath = getRequest().getScheme()+"://"+getRequest().getServerName()+":"+getRequest().getServerPort()+path+"/";
@@ -254,6 +257,7 @@ public class ProductsAddHtmlController extends BaseController {
 			//修改产品静态页面字段
 			
 			pd.put("PRODUCT_URL", basePath+Const.HTMLPATH+pd.getString("PRODUCT_ANOTHERNAME")+".html");
+			pd.put("PRODUCTSTATUS", 2);
 			productsService.edit(pd);
 			
 			
@@ -261,7 +265,8 @@ public class ProductsAddHtmlController extends BaseController {
 			out.close();
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
-			pd.put("msg", "no");
+			out.write("error");
+			out.close();
 		}						
 	}	
 	

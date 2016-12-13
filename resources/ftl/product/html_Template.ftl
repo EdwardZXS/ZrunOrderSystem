@@ -14,6 +14,7 @@
 <script src="js/time.lesser.js"></script>
 <script src="js/demo.js"></script>
 <script src="js/notorder.js"></script>
+
 <style>
 body{background: #c00000;}
 #page{max-width:750px; }
@@ -195,7 +196,9 @@ body{background: #c00000;}
         <form id="form" name="form" action="${Url}" method="post" onsubmit="return postcheck()">
         <input type="hidden" name="PRODUCTS_ID" value="${PRODUCTS_ID}">
         <input type="hidden" name="PRODUCT_ANOTHERNAME" value="${PRODUCT_ANOTHERNAME}">
+        <input type="hidden" name="PRODUCT_NAME" value="${PRODUCT_NAME}">
         <input type="hidden" name="MERCHANTID" value="${MERCHANTID}">
+        <input type="hidden" name="CHANNELS_ID" id="CHANNELS_ID" value="">
       
         <div class="bdbox">
             <label class="bdxx"><em>*</em>产品</label>

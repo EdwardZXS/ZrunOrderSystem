@@ -61,6 +61,17 @@ public class DictionariesController extends BaseController {
 				pd.put("P_BM", pdp.getString("BIANMA") + "_" + pd.getString("BIANMA"));
 			}
 			pd.put("ZD_ID", this.get32UUID());	//ID
+			//查询一下
+			PageData pdp2 = new PageData();
+			pdp2.put("P_BM", pd.get("P_BM"));
+			List<PageData> pdp2list = dictionariesService.ListAllDict2(pdp2);
+			if(pdp2list.size()>0){
+				mv.addObject("msg","error");
+				mv.addObject("msgs","Unique error！");// TODO: handle exception
+				mv.setViewName("save_result");
+				return mv;
+			}
+			
 			dictionariesService.save(pd);
 		}else{
 			pdp = dictionariesService.findById(pdp);

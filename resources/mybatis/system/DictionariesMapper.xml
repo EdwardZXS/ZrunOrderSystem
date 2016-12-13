@@ -10,6 +10,7 @@
 			set NAME    = #{NAME},
 				ORDY_BY = #{ORDY_BY},
 				BIANMA  = #{BIANMA},
+				DVALUES  = #{DVALUES},
 				P_BM	  = #{P_BM}
 			where 
 				ZD_ID = #{ZD_ID}
@@ -24,6 +25,7 @@
 			ORDY_BY,
 			PARENT_ID,
 			JB,
+			DVALUES,
 			P_BM
 		from 
 			SYS_DICTIONARIES
@@ -39,6 +41,7 @@
 			BIANMA,
 			ORDY_BY,
 			PARENT_ID,
+			DVALUES,
 			JB,
 			P_BM
 		) values (
@@ -47,6 +50,7 @@
 			#{BIANMA},
 			#{ORDY_BY},
 			#{PARENT_ID},
+			#{DVALUES},
 			#{JB},
 			#{P_BM}
 		)
@@ -61,13 +65,16 @@
 				z1.PARENT_ID,
 				z1.JB,
 				z1.P_BM,
+				z1.DVALUES,
 				z2.NAME PNAME
 		from SYS_DICTIONARIES z1
 		left join
 			SYS_DICTIONARIES z2 
 		on  z1.PARENT_ID = z2.ZD_ID 
-		where 
-		    z1.PARENT_ID = 'd39e791f50b64fbe93a4d8d0d85fdb57'
+		where 1 = 1
+		<if test="pd.PARENT_ID != null and pd.PARENT_ID != ''">
+			and z1.PARENT_ID = #{pd.PARENT_ID}
+		</if>
 		<if test="pd.NAME != null and pd.NAME != ''">
 			and z1.NAME LIKE CONCAT(CONCAT('%', #{pd.NAME}),'%') 
 		</if>
@@ -83,9 +90,30 @@
 			d.PARENT_ID,
 			d.JB,
 			d.P_BM,
+			d.DVALUES,
 			d.ZD_ID
 		FROM
-			sys_dictionaries d
+			SYS_DICTIONARIES d
+		WHERE 1 = 1
+		<if test="PARENT_ID != null and PARENT_ID != ''">
+			and d.PARENT_ID = #{PARENT_ID}
+		</if>
+	</select>
+	<select id="listAllDict2" parameterType="pd" resultType="pd">
+		SELECT
+			d.NAME,
+			d.BIANMA,
+			d.ORDY_BY,
+			d.PARENT_ID,
+			d.JB,
+			d.P_BM,
+			d.DVALUES,
+			d.ZD_ID
+		FROM
+			sys_dictionaries d 
+		where 
+			d.P_BM = #{P_BM} 
+			
 	</select>
 	
 	<!-- 查询总数 -->

@@ -130,17 +130,6 @@
 		var reg1 = /^#.*/;
 		var reg2 = /.*#$/;
 		
-		if($("#SIZE").val()==""){
-			$("#SIZE").tips({
-				side:3,
-	            msg:'请输入尺码',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#SIZE").focus();
-			return false;
-		}
-		
 		if(reg1.test($("#SIZE").val())||reg2.test($("#SIZE").val())){
 			$("#SIZE").tips({
 				side:3,
@@ -149,17 +138,6 @@
 	            time:2
 	        });
 			$("#SIZE").focus();
-			return false;
-		}
-		
-		if($("#COLOR").val()==""){
-			$("#COLOR").tips({
-				side:3,
-	            msg:'请输入颜色',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#COLOR").focus();
 			return false;
 		}
 			
@@ -253,8 +231,6 @@
 						<option value="">- 请选择 -</option>
 						<c:forEach items="${dictList}" var="dict">
 							<option value="${dict.ZD_ID}" <c:if test="${pd.ZD_ID == dict.ZD_ID}">selected</c:if>>${dict.NAME}</option>
-							<%-- <option value="${dict.ZD_ID}" <c:if test="${CUR_USER.USER_ID==dict.ZD_ID}">selected</c:if>>${dict.NAME}</option> --%>
-							<%-- <option value="${kh.CUSTOMERS_ID}" <c:if test="${pd.ROLE_ID==role.ROLE_ID}">selected</c:if>>${role.ROLE_NAME }</option> --%>
 						</c:forEach>
 					</select>
 				</td>
@@ -297,6 +273,16 @@
 				</td>
 			</tr>
 			<tr>
+				<c:if test="${msg eq 'save'}">
+					<td style="width:70px;text-align: right;padding-top: 13px;">添加图片:</td>
+					<td>
+						<a onclick="uploadfile('1');">商品封面</a><br/>
+						<a onclick="uploadfile('2');">快递信息</a><br/>
+						<a onclick="uploadfile('3');">商品介绍</a>
+					</td>
+				</c:if>
+			</tr>
+			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">产品描述:</td>
 				<%-- <td><input type="text" name="EXPLAINS" id="EXPLAINS" value="${pd.EXPLAINS}" maxlength="32" placeholder="这里输入产品描述" title="产品描述"/></td> --%>
 				<td colspan="3">
@@ -318,7 +304,6 @@
 		<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 		
 	</form>
-	
 	
 		<!-- 引入 -->
 		<script type="text/javascript">window.jQuery || document.write("<script src='static/js/jquery-1.9.1.min.js'>\x3C/script>");</script>
@@ -342,10 +327,11 @@
 		
 		// 判断输入的字符是否为英文字母    
 		function IsLetter(){
-			var str = document.getElementById('PRODUCT_ANOTHERNAME').value.trim();    
+			var str = document.getElementById('PRODUCT_ANOTHERNAME').value.trim();
+			var url1 = "<%=basePath%>products/ajaxCheckAName.do?prAName="+$("#PRODUCT_ANOTHERNAME").val();
 			if(str.length!=0){    
 			reg=/^[a-zA-Z]+$/;     
-			if(!reg.test(str)){    
+			if(!reg.test(str)){// 判断别名是否为英文    
 				$("#PRODUCT_ANOTHERNAME").tips({
 					side:3,
 		            msg:'别名仅允许为英文...',
@@ -353,6 +339,19 @@
 		            time:2
 		        });
 				$("#PRODUCT_ANOTHERNAME").focus();
+			}else {// 别名为英文,判断别名是否重复
+				 $.getJSON(url1, function(json){  
+		          		
+		       			if(json.RESULT == 'NO'){// 重复不可用
+		       				$("#PRODUCT_ANOTHERNAME").tips({
+		    					side:3,
+		    		            msg:'商品别名不可用',
+		    		            bg:'#AE81FF',
+		    		            time:2
+		    		        });
+		    				$("#PRODUCT_ANOTHERNAME").focus();
+		       			}
+		           });  
 			}    
 		}
 		}     
@@ -379,6 +378,27 @@
 					$("#DISCOUNT").val(var2);
 				}
 			}
+		}
+		
+		// 上传图片
+		function uploadfile(type){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="新增";
+			 diag.URL = '<%=basePath%>imgs/goAdd.do';
+			 diag.Width = 800;
+			 diag.Height = 490;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if('${page.currentPage}' == '0'){
+					 top.jzts();
+					 setTimeout("self.location=self.location",100);
+				 }else{
+					 nextPage(${page.currentPage});
+				 }
+				diag.close();
+			 };
+			 diag.show();
 		}
 		</script>
 </body>
