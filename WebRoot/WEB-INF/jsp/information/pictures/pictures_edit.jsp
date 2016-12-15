@@ -53,16 +53,7 @@
 			}
 		}
 		
-		if($("#MASTER_ID").val()==""){
-			$("#MASTER_ID").tips({
-				side:3,
-	            msg:'请输入属于',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#MASTER_ID").focus();
-			return false;
-		}
+		
 		if($("#BZ").val()==""){
 			$("#BZ").tips({
 				side:3,
@@ -123,16 +114,13 @@
 					<input type="file" id="tp" name="tp" onchange="fileType(this)"/>
 					</c:if>
 					<c:if test="${pd != null && pd.PATH != '' && pd.PATH != null }">
-						<a href="<%=basePath%>uploadFiles/uploadImgs/${pd.PATH}" target="_blank"><img src="<%=basePath%>uploadFiles/uploadImgs/${pd.PATH}" width="210"/></a>
+						<a href="<%=basePath%>html/product/${pd.PATH}" target="_blank"><img src="<%=basePath%>html/product/${pd.PATH}" width="210"/></a>
 						<input type="button" class="btn btn-mini btn-danger" value="删除" onclick="delP('${pd.PATH}','${pd.PICTURES_ID }');" />
 						<input type="hidden" name="tpz" id="tpz" value="${pd.PATH }"/>
 					</c:if>
 				</td>
 			</tr>
-			<tr>
-				<th>属于:</th>
-				<td><input type="text" name="MASTER_ID" id="MASTER_ID" value="${pd.MASTER_ID}" maxlength="32" placeholder="这里输入属于" title="属于"/></td>
-			</tr>
+			
 			<tr>
 				<th>备注:</th>
 				<td><input type="text" name="BZ" id="BZ" value="${pd.BZ}" maxlength="32" style="width:95%;" placeholder="这里输入备注" title="备注"/></td>

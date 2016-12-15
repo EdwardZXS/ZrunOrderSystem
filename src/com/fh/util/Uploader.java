@@ -361,4 +361,9 @@ public class Uploader {
 	public String getOriginalName() {
 		return this.originalName;
 	}
+	
+	public static void main(String[] args) {
+		List<String> arrayList = new ArrayList<String>();
+		System.out.println(arrayList.size());
+	}
 }

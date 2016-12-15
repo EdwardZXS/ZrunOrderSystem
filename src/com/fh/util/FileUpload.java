@@ -1,6 +1,7 @@
 package com.fh.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,6 +29,25 @@ public class FileUpload {
 				extName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 			}
 			copyFile(file.getInputStream(), filePath, fileName+extName).replaceAll("-", "");
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		return fileName+extName;
+	}
+	
+	/**
+	 * @param file 			//文件对象
+	 * @param filePath		//上传路径
+	 * @param fileName		//文件名
+	 * @return  文件名
+	 */
+	public static String fileUp2(File file, String filePath, String fileName){
+		String extName = ""; // 扩展名格式：
+		try {
+			if (file.getName().lastIndexOf(".") >= 0){
+				extName = file.getName().substring(file.getName().lastIndexOf("."));
+			}
+			copyFile(new FileInputStream(file), filePath, fileName+extName).replaceAll("-", "");
 		} catch (IOException e) {
 			System.out.println(e);
 		}

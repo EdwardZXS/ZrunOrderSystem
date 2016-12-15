@@ -198,7 +198,7 @@
 				a.ORDERS_ID
 		from 
 				ZR_ORDERS a 
-JOIN zr_products p on p.PRODUCTS_ID=a.PRODUCTID 
+JOIN ZR_PRODUCTS p on p.PRODUCTS_ID=a.PRODUCTID 
 		where 1=1 
 		<if test="pd.CONSIGNEE != null and pd.CONSIGNEE !=''">
 			and a.CONSIGNEE LIKE CONCAT(CONCAT('%', #{pd.CONSIGNEE}),'%')

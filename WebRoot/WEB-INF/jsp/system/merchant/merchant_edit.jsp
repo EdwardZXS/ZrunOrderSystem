@@ -143,7 +143,8 @@
 				<td style="width:70px;text-align: right;padding-top: 13px;">所属销售:</td>
 				<td>
 					<select class="chzn-select" name="USERID" id="USERID" data-placeholder="请选择销售" style="vertical-align:top;width: 220px;">
-						<option value="">- 请选择 -</option>
+						<option value=""></option>
+						<option value="">全部</option>
 						<c:forEach items="${userList}" var="user">
 							<option value="${user.USER_ID}" <c:if test="${pd.USERID == user.USER_ID}">selected</c:if>>${user.NAME}</option>
 						</c:forEach>

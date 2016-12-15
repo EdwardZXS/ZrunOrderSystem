@@ -64,6 +64,7 @@
 						<th>ID</th>
 						<th>创建时间</th>
 						<th>属于</th>
+						<th>地址</th>
 						<th>备注</th>
 						<th class="center">操作</th>
 					</tr>
@@ -82,12 +83,13 @@
 								</td>
 								<td class='center' style="width: 30px;">${vs.index+1}</td>
 										<td>
-										<a href="<%=basePath%>uploadFiles/uploadImgs/${var.PATH}" title="${var.TITLE}" class="bwGal"><img src="<%=basePath%>uploadFiles/uploadImgs/${var.PATH}" alt="${var.TITLE}" width="100"></a>
+										<a href="<%=basePath%>html/product/${var.PATH}" title="${var.TITLE}" class="bwGal"><img src="<%=basePath%>html/product/${var.PATH}" alt="${var.TITLE}" width="100"></a>
 										</td>
 										<td>${var.TITLE}</td>
 										<td>${var.PICTURES_ID}</td>
 										<td>${var.CREATETIME}</td>
-										<td>${var.MASTER_ID}</td>
+										<td>${var.MERCHANT_NAME}</td>
+										<td>html/product/${var.PATH}</td>
 										<td>${var.BZ}</td>
 								<td style="width: 30px;" class="center">
 										<c:if test="${QX.edit != 1 && QX.del != 1 }">

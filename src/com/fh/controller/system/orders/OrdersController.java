@@ -69,6 +69,7 @@ public class OrdersController extends BaseController {
 	 * html新增
 	 */
 	@RequestMapping(value="/save")
+	@ResponseBody
 	public synchronized void save(HttpServletResponse response) throws Exception{
 		logBefore(logger, "html新增Orders");
 		ModelAndView mv = this.getModelAndView();
@@ -157,15 +158,11 @@ public class OrdersController extends BaseController {
 			
 		}
 		
-		
-		
-		
-		
-		
 		//String url="../"+Const.HTMLPATH+pd.getString("PRODUCT_ANOTHERNAME")+".html";//这是跳转回产品页面
 		String url="../"+Const.HTMLPATH+"success.html";
 		response.sendRedirect(url);
 	}
+	
 	/**
 	 * jsp新增
 	 * @throws Exception

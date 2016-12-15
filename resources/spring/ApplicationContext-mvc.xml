@@ -24,6 +24,7 @@
 	<mvc:resources mapping="/static/**" location="/,/static/" />
 	<mvc:resources mapping="/plugins/**" location="/,/plugins/" />
 	<mvc:resources mapping="/uploadFiles/**" location="/,/uploadFiles/" /> 
+	<mvc:resources mapping="/html/**" location="/,/html/" /> 
 	<mvc:resources location="/" mapping="/**/*.html"/>
 
 	<!-- 访问拦截  -->  

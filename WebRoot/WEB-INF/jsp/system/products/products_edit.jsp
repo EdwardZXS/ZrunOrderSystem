@@ -172,6 +172,16 @@
 			$("#PRODUCTSTATUS").focus();
 			return false;
 		}
+		if($("#DATETIMES").val()==""){
+			$("#DATETIMES").tips({
+				side:3,
+	            msg:'请输入倒计时天数',
+	            bg:'#AE81FF',
+	            time:2
+	        });
+			$("#DATETIMES").focus();
+			return false;
+		}
 		if($("#EXPLAINS").val()==""){
 			$("#EXPLAINS").tips({
 				side:3,
@@ -199,7 +209,8 @@
 				<td>
 					<%-- <input type="text" name="PRODUCT_NAME" id="PRODUCT_NAME" value="${pd.PRODUCT_NAME}" maxlength="32" placeholder="这里输入产品名称" title="产品名称"/> --%>
 					<select class="chzn-select" name="MERCHANTID" id="MERCHANTID" data-placeholder="请选择所属商户" style="vertical-align:top;width: 220px;">
-						<option value="">- 请选择 -</option>
+						<option value=""></option>
+						<option value="">全部</option>
 						<c:forEach items="${merchList}" var="merch">
 							<option value="${merch.MERCHANT_ID}" <c:if test="${pd.MERCHANTID == merch.MERCHANT_ID}">selected</c:if>>${merch.MERCHANT_NAME}</option>
 						</c:forEach>
@@ -209,7 +220,8 @@
 				<td>
 					<%-- <input type="text" name="PRODUCT_ANOTHERNAME" id="PRODUCT_ANOTHERNAME" value="${pd.PRODUCT_ANOTHERNAME}" maxlength="32" placeholder="这里输入产品别名" title="产品别名"/> --%>
 					<select class="chzn-select" name="USERID" id="USERID" data-placeholder="请选择创建人员" style="vertical-align:top;width: 220px;">
-						<option value="">- 请选择 -</option>
+						<option value=""></option>
+						<option value="">全部</option>
 						<c:forEach items="${userList}" var="user">
 							<option value="${user.USER_ID}" <c:if test="${pd.USERID == user.USER_ID}">selected</c:if>>${user.NAME}</option>
 						</c:forEach>
@@ -228,7 +240,8 @@
 				<td>
 					<%-- <input type="text" name="USERID" id="USERID" value="${pd.USERID}" maxlength="32" placeholder="这里输入所属销售ID" title="所属销售ID"/> --%>
 					<select class="chzn-select" name="ZD_ID" id="ZD_ID" data-placeholder="请选择产品类型" style="vertical-align:top;width: 220px;">
-						<option value="">- 请选择 -</option>
+						<option value=""></option>
+						<option value="">全部</option>
 						<c:forEach items="${dictList}" var="dict">
 							<option value="${dict.ZD_ID}" <c:if test="${pd.ZD_ID == dict.ZD_ID}">selected</c:if>>${dict.NAME}</option>
 						</c:forEach>
@@ -273,13 +286,46 @@
 				</td>
 			</tr>
 			<tr>
+				<td>倒计时(天)</td>
+				<td colspan="3"><input type="text" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')" name="DATETIMES" id="DATETIMES" value="${pd.DATETIMES}" maxlength="32" placeholder="这里输入倒计时(天)" title="倒计时(天)"/></td>
+			</tr>
+			<tr>
+			<tr>
 				<c:if test="${msg eq 'save'}">
 					<td style="width:70px;text-align: right;padding-top: 13px;">添加图片:</td>
-					<td>
-						<a onclick="uploadfile('1');">商品封面</a><br/>
-						<a onclick="uploadfile('2');">快递信息</a><br/>
-						<a onclick="uploadfile('3');">商品介绍</a>
+				<td colspan="3">
+				<table style="width: 100%;">
+					<tr>
+					<td width="100px">
+					<a href="#myModal" onclick="uploadfiles('imgs1','path1');" role="button" class="btn" data-toggle="modal">商品封面</a>
 					</td>
+					<td>
+					<div id="imgs1"></div><input style="float: left;" type="text" id="path1" name="path1" value=""/>
+					<span class="widget-toolbar" style="line-height:7px;padding:0px;"><a data-action="close" onclick="deleInput('path1');" title="清空" ><i class="icon-remove"></i></a></span>
+					</td>
+					<td rowspan="3" width="130px"><span style="color: red;">如果修改图片请先清空输入框，再重新选择!!!</span></td>
+					</tr>
+					<tr>
+					<td>
+					<a href="#myModal" onclick="uploadfiles('imgs2','path2');" role="button" class="btn" data-toggle="modal">物流信息</a>
+					</td>
+					<td>
+					<div id="imgs2"></div><input type="text" id="path2" name="path2" value=""/>
+					<span class="widget-toolbar" style="line-height:7px;padding:0px;"><a data-action="close" onclick="deleInput('path2');" title="清空" ><i class="icon-remove"></i></a></span>
+					</td>
+					</tr>
+					<tr>
+					<td>
+					<a href="#myModal" onclick="uploadfiles('imgs3','path3');" role="button" class="btn" data-toggle="modal">商品介绍</a>
+					</td>
+					<td>
+					<div id="imgs3"></div><input type="text" id="path3" name="path3" value=""/>
+					<span class="widget-toolbar" style="line-height:7px;padding:0px;"><a data-action="close" onclick="deleInput('path3');" title="清空" ><i class="icon-remove"></i></a></span>
+					</td>
+					</tr>
+				</table>
+				</td>
+					
 				</c:if>
 			</tr>
 			<tr>
@@ -301,6 +347,34 @@
 		</table>
 		</div>
 		
+		 <!-- Modal -->
+        <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Modal header</h3>
+            </div>
+            <div class="modal-body">
+               <div id="imgsList"><ul id="imgsul"><li></li></ul></div>
+               
+               <div class="">
+				<table style="width:100%;">
+					<tr>
+						<td style="vertical-align:top;">
+						<div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">
+							<a href="javascript:;" onclick="uploadfiles2('B')">上页</a><span id="dangqian">1</span><a href="javascript:;" onclick="uploadfiles2('A')">下页</a>
+						</div></td>
+					</tr>
+				</table>
+			</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn"  data-dismiss="modal" aria-hidden="true">Save</button>
+            </div>
+        </div>
+		
+		
+		
 		<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 		
 	</form>
@@ -312,6 +386,10 @@
 		<script src="static/js/ace.min.js"></script>
 		<script type="text/javascript" src="static/js/chosen.jquery.min.js"></script><!-- 下拉框 -->
 		<script type="text/javascript" src="static/js/bootstrap-datepicker.min.js"></script><!-- 日期框 -->
+		
+		<script type="text/javascript" src="static/js/dhc/layer.js"></script><!-- 选中效果 -->
+		<link rel="stylesheet" href="static/js/dhc/layui.css" media="all"><!-- 选中效果 -->
+		
 		<script type="text/javascript">
 		$(top.hangge());
 		$(function() {
@@ -323,6 +401,52 @@
 			//日期框
 			$('.date-picker').datepicker();
 			
+		//点击
+			$('#imgsul').delegate('li','click',function(){
+		  //如果点击后则状态不一样
+		  if($(this).hasClass("selected")){
+		  	$(this).attr("class","");
+			var p=$("#imgsul").attr("title");
+			if(p == 'path3'){
+				var p3 = $("#"+p).val();//原有path
+			  	//判断数组
+			  	var obj2=p3.split(";");  
+			  	//根据数组删除对应path
+			  	alert(obj2.length);
+			  	if(obj2.length>1){
+			  		var ps = $(this).attr("id");//取消的id path
+					p3=p3.replace(";"+ps,"");
+					$("#"+p).val(p3);
+			  	}else{
+			  		var ps = $(this).attr("id");//取消的id path
+					p3=p3.replace(ps,"");
+					$("#"+p).val(p3);
+			  	}
+			  	
+			   }else{
+			  	 var p3=$("#"+p).val();//原有path
+			  	 var ps = $(this).attr("id");//取消的id path
+			  	 p3=p3.replace(ps,"");
+			  	 $("#"+p).val(p3);
+			   }
+		   }else{
+			$(this).attr("class","selected");
+		   	 //这是赋值
+			var p=$("#imgsul").attr("title");//哪个input名
+			if(p == 'path3'){
+				var p3 = $("#"+p).val();
+			  	if(p3 == ''){
+			  		p3=$(this).attr("id");//选中的id
+			  	}else{
+			  		p3+=";"+$(this).attr("id");
+			  	}
+			  	$("#"+p).val(p3);
+			   }else{
+			  	 $("#"+p).val($(this).attr("id"));
+			   }
+		   }
+		    $("input").trigger("chosen:updated"); 
+			});
 		});
 		
 		// 判断输入的字符是否为英文字母    
@@ -400,6 +524,84 @@
 			 };
 			 diag.show();
 		}
+		function deleInput(id){
+			$("#"+id).val("");
+			$("#"+id).trigger("chosen:updated"); 
+		}
+		// 选择图片
+		function uploadfiles(imgs,paths){
+		
+	             //获取选中的
+	            var url1 = "products/ajaxImg.do";
+	          // top.jzts();
+	           $("#imgsul").attr("title",paths);
+	          $("#imgsul li").remove();
+				$.ajax({
+					type: "POST",
+					url: url1,
+					data:{pss:1},
+					dataType:'json',
+					//beforeSend: validateData,
+					cache: false,
+					//需要加个date:页数
+					success: function(data){
+						
+						for ( var int = 0; int < data.length; int++) {
+							var path = data[int].PATH;
+							
+							//alert(path);
+							var imgpath="<div class='photo_list_img'><img width:50px;height:70px; src='html/product/"+path+"' /></div><div class='photo_list_selected'><div class='selected_mask_inner'></div><div class='selected_mask_icon'></div></div>";
+							$("#imgsul").append(" <li id="+path+" style='list-style-type:none;float:left;'  value=html/product/"+path+">"+imgpath+"</li>");
+							//onclick='clicksimg1('"+path+"')'
+						}
+							 $("#imgsul").trigger("chosen:updated"); 
+					}
+				}); 
+	            
+		}
+		// 上下页图片
+		function uploadfiles2(pasr){
+		alert(pasr);
+		var dang = parseInt($("#dangqian").text());
+		if(dang == ''){
+			dang=1;
+		}
+		if(pasr == 'A'){
+			dang+=1;
+		}
+			if(pasr == 'B'){
+				if(dang>1){
+					dang-=1;
+				}
+			}
+	             //获取选中的
+	            var url1 = "products/ajaxImg.do";
+	          $("#imgsul li").remove();
+				$.ajax({
+					type: "POST",
+					url: url1,
+					dataType:'json',
+					//beforeSend: validateData,
+					cache: false,
+					//需要加个date:页数
+					data:{"pss":dang},
+					success: function(data){
+						$("#dangqian").text(dang);
+						 $("#dangqian").trigger("chosen:updated"); 
+						for ( var int = 0; int < data.length; int++) {
+							var path = data[int].PATH;
+							
+							//alert(path);
+							var imgpath="<div class='photo_list_img'><img width:50px;height:70px; src='html/product/"+path+"' /></div><div class='photo_list_selected'><div class='selected_mask_inner'></div><div class='selected_mask_icon'></div></div>";
+							$("#imgsul").append(" <li id="+path+" style='list-style-type:none;float:left;'  value=html/product/"+path+">"+imgpath+"</li>");
+							//onclick='clicksimg1('"+path+"')'
+						}
+							 $("#imgsul").trigger("chosen:updated"); 
+					}
+				}); 
+	            
+		}
+	
 		</script>
 </body>
 </html>

@@ -76,10 +76,15 @@
 				a.CREATETIME,	
 				a.MASTER_ID,	
 				a.BZ,	
+				m.MERCHANT_NAME,	
 				a.PICTURES_ID
 		from 
-				TB_PICTURES a
+				TB_PICTURES a 
+		left join ZR_MERCHANT m on m.MERCHANT_ID=a.MASTER_ID 
 		where 1 = 1
+		<if test="pd.MASTER_ID != null and pd.MASTER_ID != ''">
+			 and a.MASTER_ID = #{pd.MASTER_ID}
+		</if>
 		<if test="pd.KEYW != null and pd.KEYW != ''"><!-- 关键词检索 -->
 			and
 				(
@@ -91,7 +96,8 @@
 					 or
 					 a.MASTER_ID LIKE CONCAT(CONCAT('%', #{pd.KEYW}),'%')
 				)
-		</if>
+		</if> 
+		order by a.CREATETIME desc 
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -105,7 +111,39 @@
 				a.BZ,	
 				a.PICTURES_ID
 		from 
-				TB_PICTURES a
+				TB_PICTURES a 
+		left join ZR_MERCHANT m on m.MERCHANT_ID=a.MASTER_ID 
+		where 1 = 1
+		<if test="MASTER_ID != null and MASTER_ID != ''">
+			 and a.MASTER_ID = #{MASTER_ID}
+		</if>
+		<if test="KEYW != null and KEYW != ''"><!-- 关键词检索 -->
+			and
+				(
+					 a.TITLE LIKE CONCAT(CONCAT('%', #{KEYW}),'%')
+					 or 
+					 a.NAME LIKE CONCAT(CONCAT('%', #{KEYW}),'%') 
+					 or
+					 a.PICTURES_ID LIKE CONCAT(CONCAT('%', #{KEYW}),'%')
+					 or
+					 a.MASTER_ID LIKE CONCAT(CONCAT('%', #{KEYW}),'%')
+				)
+		</if> 
+		order by a.CREATETIME desc 
+	</select>
+	<!-- ajaxlist列表(全部) -->
+	<select id="ajaxlistPage" parameterType="page" resultType="pd">
+		select
+				a.PATH	
+		from 
+				TB_PICTURES a 
+		left join ZR_MERCHANT m on m.MERCHANT_ID=a.MASTER_ID 
+		where 1 = 1
+		<if test="pd.MASTER_ID != null and pd.MASTER_ID != ''">
+			 and a.MASTER_ID = #{pd.MASTER_ID}
+		</if>
+		
+		order by a.CREATETIME desc 
 	</select>
 	
 	<!-- 批量删除 -->

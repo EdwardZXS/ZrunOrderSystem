@@ -39,7 +39,7 @@ public class ObjectExcelRead {
 
 			for (int i = startrow; i < rowNum; i++) {					//行循环开始
 				
-				PageData varpd = new PageData();
+				PageData varpd = new PageData();						
 				HSSFRow row = sheet.getRow(i); 							//行
 				int cellNum = row.getLastCellNum(); 					//每行的最后一个单元格位置
 

@@ -18,7 +18,7 @@ import com.fh.util.Const;
 public class WebAppContextListener implements ServletContextListener {
 
 	public void contextDestroyed(ServletContextEvent event) {
-		// TODO Auto-generated method stub
+		System.out.println("111111111");
 	}
 
 	public void contextInitialized(ServletContextEvent event) {

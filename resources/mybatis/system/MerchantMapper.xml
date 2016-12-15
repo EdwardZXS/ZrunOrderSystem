@@ -155,6 +155,7 @@
 		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and m.INPUTDATE &lt;= #{pd.lastLoginEnd} 
 		</if>
+		order by m.MERCHANT_ID desc
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -179,6 +180,7 @@
 			 and a.MERCHANT_ID = #{MERCHANT_ID} 
 			 ]]>
 		</if>
+		order by a.MERCHANT_ID desc
 		
 	</select>
 	

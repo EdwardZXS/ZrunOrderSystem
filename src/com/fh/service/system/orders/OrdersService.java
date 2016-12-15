@@ -32,6 +32,10 @@ public class OrdersService {
 	public synchronized void save(PageData pd)throws Exception{
 		//生成订单编号
 		pd.put("ORDERS_NUMBER",DateUtil2.getObject());
+		if(pd.get("CHANNELS_ID")!=null && !pd.get("CHANNELS_ID").toString().equals("")){
+		}else{
+			pd.put("CHANNELS_ID",0);
+		}
 		dao.save("OrdersMapper.save", pd);
 		//修改购买人数+销量
 		PageData pdPr=(PageData)dao.findForObject("ProductsMapper.findById", pd);
