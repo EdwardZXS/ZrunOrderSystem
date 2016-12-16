@@ -75,8 +75,8 @@
 						<!-- <th class="center">库存</th> -->
 						<th class="center">输入日期</th>
 						<th class="center">状态</th>
+						<!-- <th class="center">导入评论</th> -->
 						<th class="center">页面地址</th>
-						<th class="center">添加商品评价</th>
 						<th class="center">套餐管理</th>
 						<th class="center">操作</th>
 					</tr>
@@ -112,10 +112,8 @@
 											<c:if test="${var.PRODUCTSTATUS == 2 }">正常</c:if>
 											<c:if test="${var.PRODUCTSTATUS == 3 }">下架</c:if>
 										</td>
-										<td>${var.PRODUCT_URL}</td>
-										<!-- 导入excel表格 -->
-										<td style="vertical-align:top;"><a class="btn btn-mini btn-light" onclick="importExl('${var.PRODUCTS_ID}');" title="从EXCEL导入"><i id="nav-search-icon" class="icon-cloud-upload"></i></a></td>
-										<%-- <td><a href="${var.PRODUCT_URL}">点击查看</a></td> --%>
+										<%-- <td><a href="javascript:;" onclick="fromExcel(${var.PRODUCTS_ID});">添加评论</a></td> --%>
+										<td><a href="javascript:;" onclick="urlGenerate(${var.PRODUCTS_ID},${var.MERCHANTID});">点击查看</a></td>
 										<td><a href="packages/list.do?PRODUCTSID=${var.PRODUCTS_ID }">套餐管理</a></td>
 								<td style="width: 30px;" class="center">
 									<div class='hidden-phone visible-desktop btn-group'>
@@ -174,6 +172,10 @@
 		</div>
 		</form>
 	</div>
+ 
+ 
+ 
+ 
 	<!-- PAGE CONTENT ENDS HERE -->
   </div><!--/row-->
 	
@@ -357,13 +359,17 @@
 			});
 		}
 		
-		// 导入excel
-		function importExl(Id){
+		//导出excel
+		function toExcel(){
+			window.location.href='<%=basePath%>products/excel.do';
+		}
+		//打开上传excel页面
+		function fromExcel(Id){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="EXCEL 导入到数据库";
-			 diag.URL = '<%=basePath%>products/goUploadExcel.do;
+			 diag.URL = '<%=basePath%>evaluate/goUploadExcel.do?PRODUCTS_ID='+Id;
 			 diag.Width = 300;
 			 diag.Height = 150;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -378,11 +384,6 @@
 				diag.close();
 			 };
 			 diag.show();
-		}
-		
-		//导出excel
-		function toExcel(){
-			window.location.href='<%=basePath%>products/excel.do';
 		}
 		</script>
 		

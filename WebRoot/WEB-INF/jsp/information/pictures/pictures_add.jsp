@@ -37,7 +37,7 @@
                 <div class="queueList">
                     <div id="dndArea" class="placeholder">
                         <div id="filePicker"></div>
-                        <p>或将照片拖到这里，单次最多可选300张</p>
+                        <p>图片管理区(建议上传2M以内的图片或更小的500KB以内)</p>
                     </div>
                 </div>
                 <div class="statusBar" style="display:none;">

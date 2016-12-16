@@ -1,6 +1,5 @@
 package com.fh.controller.system.products;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.druid.support.json.JSONUtils;
@@ -35,7 +31,6 @@ import com.fh.entity.system.User;
 import com.fh.service.information.pictures.PicturesService;
 import com.fh.service.system.channels.ChannelsService;
 import com.fh.service.system.dictionaries.DictionariesService;
-import com.fh.service.system.evaluate.EvaluateService;
 import com.fh.service.system.imgs.ImgsService;
 import com.fh.service.system.merchant.MerchantService;
 import com.fh.service.system.packages.PackagesService;
@@ -43,11 +38,7 @@ import com.fh.service.system.products.ProductsService;
 import com.fh.service.system.user.UserService;
 import com.fh.util.AppUtil;
 import com.fh.util.Const;
-import com.fh.util.DateUtil;
-import com.fh.util.FileDownload;
-import com.fh.util.FileUpload;
 import com.fh.util.Jurisdiction;
-import com.fh.util.ObjectExcelRead;
 import com.fh.util.ObjectExcelView;
 import com.fh.util.PageData;
 import com.fh.util.PathUtil;
@@ -79,55 +70,6 @@ public class ProductsController extends BaseController {
 	private PicturesService picturesService;
 	@Resource(name="packagesService")
 	private PackagesService packagesService;
-	@Resource(name="evaluateService")
-	private EvaluateService evaluateService;
-	
-	
-	/**
-	 * 读取上传的excel：商品评价
-	 * @throws Exception 
-	 */
-	@RequestMapping("/readExcel")
-	public ModelAndView readExcel(@RequestParam(required=false) MultipartFile file) throws Exception{
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		PageData evaPd = new PageData();
-		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;}
-		List<PageData> listPd = null;
-		if (null != file && !file.isEmpty()) {
-			String filePath = PathUtil.getClasspath() + Const.FILEPATHFILE;								//文件上传路径
-			String fileName =  FileUpload.fileUp(file, filePath, "evaluatexcel");							//执行上传
-			listPd = (List)ObjectExcelRead.readExcel(filePath, fileName, 1, 0, 0);
-			// PRODUCTID MERCHANTID USERTYPE EVALUATE_CONTENT SEQUENCES
-			evaPd.put("PRODUCTID", pd.getString("PRODUCTS_ID"));
-			pd = productsService.findById(pd);
-			evaPd.put("MERCHANTID", pd.getString("MERCHANTID"));
-			evaPd.put("USERTYPE", 1);
-			Integer seq = null;
-			for(int i = 0; i < listPd.size(); i++) {
-				PageData pageData = listPd.get(i);// 获取一行数据
-				for(int j = 0; j < pageData.size(); j++) {
-					String cellData = pageData.getString("var"+j);
-					evaPd.put("EVALUATE_CONTENT", cellData);
-					evaPd.put("SEQUENCES", ++seq);
-					evaluateService.save(evaPd);
-				}
-			}
-			mv.addObject("msg","success");
-		}
-		mv.setViewName("save_result");
-		return mv;
-	}
-	
-	/**
-	 * 打开上传EXCEL页面
-	 */
-	@RequestMapping(value="/goUploadExcel")
-	public ModelAndView goUploadExcel()throws Exception{
-		ModelAndView mv = this.getModelAndView();
-		mv.setViewName("system/products/uploadexcel");
-		return mv;
-	}
 	
 	/**
 	 * 生成静态前，检测是已添加套餐
@@ -187,8 +129,6 @@ public class ProductsController extends BaseController {
 		pd = this.getPageData();
 		// 算出节省 用原价减去现销售价
 		double save = Double.parseDouble(pd.getString("PRODUCT_PRICE")) - Double.parseDouble(pd.getString("PRODUCT_UNIT"));
-		// 获取文件的别名，用于
-		String PRODUCT_ANOTHERNAME = pd.getString("PRODUCT_ANOTHERNAME");
 		// 获取商户的QQ和手机
 		PageData merchant = merchantService.findById(pd);
 		pd.put("PRODUCT_URL", PathUtil.PathAddress()+"html/product/"+pd.getString("PRODUCT_ANOTHERNAME")+".html");
@@ -430,9 +370,9 @@ public class ProductsController extends BaseController {
 		try {
 			List<PageData>	varList = picturesService.ajaxlist(page);	//列出Pictures列表
 			Gson g=new Gson();
-			for (PageData pageData : varList) {
+			/*for (PageData pageData : varList) {
 				
-			}
+			}*/
 			return g.toJson(varList);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -440,6 +380,7 @@ public class ProductsController extends BaseController {
 		}
 		return null;
 	}
+	
 	/*
 	 * 导出到excel
 	 * @return
