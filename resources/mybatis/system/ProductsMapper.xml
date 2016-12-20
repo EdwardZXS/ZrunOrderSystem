@@ -4,7 +4,7 @@
 	
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="pd" keyProperty="PRODUCTS_ID">
+	<insert id="save" parameterType="pd" useGeneratedKeys="true" keyProperty="PRODUCTS_ID">
 		insert into ZR_PRODUCTS(
 			MERCHANTID,	
 			USERID,	
@@ -25,6 +25,7 @@
 			PRODUCTSTATUS,	
 			PRODUCT_URL,	
 			EXPLAINS,	
+			DATETIMES,	
 			BAK10
 		) values (
 			#{MERCHANTID},	
@@ -46,6 +47,7 @@
 			#{PRODUCTSTATUS},	
 			#{PRODUCT_URL},	
 			#{EXPLAINS},	
+			#{DATETIMES},	
 			#{BAK10}
 		)
 	</insert>
@@ -65,6 +67,9 @@
 			set 
 				<if test="MERCHANTID != null and MERCHANTID !=''">
 					MERCHANTID = #{MERCHANTID},
+				</if>
+				<if test="DATETIMES != null and DATETIMES !=''">
+					DATETIMES = #{DATETIMES},
 				</if>
 				<if test="USERID != null and USERID !=''">
 					USERID = #{USERID},
@@ -114,6 +119,9 @@
 				<if test="EXPLAINS != null and EXPLAINS !=''">
 					EXPLAINS = #{EXPLAINS},
 				</if>
+				<if test="BAK10 != null and BAK10 !=''">
+					BAK10 = #{BAK10},
+				</if>
 				<if test="PRODUCT_URL != null and PRODUCT_URL !=''">
 					PRODUCT_URL = #{PRODUCT_URL},
 				</if>
@@ -145,7 +153,8 @@
 			PRODUCTSTATUS,	
 			PRODUCT_URL,	
 			EXPLAINS,	
-			BAK10,	
+			BAK10,
+			DATETIMES,	
 			PRODUCTS_ID
 		from 
 			ZR_PRODUCTS
@@ -158,6 +167,7 @@
 		select 
 			p.MERCHANTID,	
 			p.USERID,	
+			p.DATETIMES,	
 			p.PRODUCT_NAME,	
 			p.PRODUCT_ANOTHERNAME,	
 			p.PRODUCT_PRICE,	
@@ -196,6 +206,7 @@
 				p.PRODUCT_PRICE,	
 				p.PRODUCT_UNIT,	
 				p.PHONE,	
+				p.DATETIMES,	
 				p.QQ,	
 				p.DISCOUNT,	
 				p.SAVE,	
@@ -219,6 +230,9 @@
 		LEFT JOIN SYS_USER u ON u.USER_ID = p.USERID
 		LEFT JOIN SYS_DICTIONARIES d ON d.ZD_ID = p.ZD_ID
 		where 1 = 1
+		<if test="pd.MERCHANTID != null and pd.MERCHANTID != ''">
+			and p.MERCHANTID = #{pd.MERCHANTID} 
+		</if>
 		<if test="pd.PRODUCT_NAME != null and pd.PRODUCT_NAME != ''">
 			and p.PRODUCT_NAME LIKE CONCAT(CONCAT('%', #{pd.PRODUCT_NAME}),'%')
 		</if>
@@ -231,6 +245,7 @@
 		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and p.INPUTDATE &lt;= #{pd.lastLoginEnd} 
 		</if>
+		order by p.PRODUCTS_ID desc
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -243,6 +258,7 @@
 				a.PRODUCT_PRICE,	
 				a.PRODUCT_UNIT,	
 				a.PHONE,	
+				a.DATETIMES,	
 				a.QQ,	
 				a.DISCOUNT,	
 				a.SAVE,	
@@ -268,11 +284,11 @@
 		</if>
 		<if test="PRODUCT_ANOTHERNAME != null and PRODUCT_ANOTHERNAME != ''">
 			and a.PRODUCT_ANOTHERNAME = #{PRODUCT_ANOTHERNAME}
-			and a.MERCHANTID=#{MERCHANTID}
 		</if>
 		<if test="PRODUCTSTATUS != null and PRODUCTSTATUS !=''">
 			and a.PRODUCTSTATUS=#{PRODUCTSTATUS}
 		</if>
+		order by a.PRODUCTS_ID desc
 	</select>
 	
 	<!-- 批量删除 -->

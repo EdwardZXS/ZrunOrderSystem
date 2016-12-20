@@ -17,10 +17,7 @@ function postcheck(){
 	newsids=newsidinfo.split("=");//对获得的参数字符串按照“=”进行分割 
 	newsid=newsids[1];//得到参数值 
 	if(newsid != "" && newsid !=undefined){
-		alert("您要传递的参数值是"+newsid);
 		document.getElementById("CHANNELS_ID").value=newsid;
-	}else{
-		alert("您要传递的参数值是"+newsid);
 	}
 	
 	

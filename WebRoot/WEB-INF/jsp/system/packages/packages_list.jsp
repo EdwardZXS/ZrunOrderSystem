@@ -192,7 +192,7 @@
 			 diag.Title ="新增";
 			 diag.URL = '<%=basePath%>packages/goAdd.do?PRODUCTS_ID=${PRODUCT_ID}';
 			 diag.Width = 700;
-			 diag.Height = 160;
+			 diag.Height = 250;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){

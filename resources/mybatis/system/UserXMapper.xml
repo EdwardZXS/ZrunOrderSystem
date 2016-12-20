@@ -290,9 +290,12 @@
 		<if test="ROLE_ID != null and ROLE_ID != ''"><!-- 角色检索 -->
 			and u.ROLE_ID=#{ROLE_ID} 
 		</if>
-		<if test="pd != null and pd.BZ != null and pd.BZ != ''"><!-- 商户检索 -->
-			and u.BZ=#{pd.BZ} 
+		<if test="BZ != null and BZ != ''"><!-- 所属人员 -->
+			and u.BZ=#{BZ} 
 		</if>
+		<!-- <if test="pd != null and pd.BZ != null and pd.BZ != ''">商户检索
+			and u.BZ=#{pd.BZ} 
+		</if> -->
 		<if test="lastLoginStart!=null and lastLoginStart!=''"><!-- 登录时间检索 -->
 			and u.LAST_LOGIN &gt;= #{lastLoginStart} 
 		</if>

@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
+import com.fh.entity.system.User;
 import com.fh.util.AppUtil;
 import com.fh.util.DateUtil;
 import com.fh.util.DelAllFile;
@@ -67,7 +68,7 @@ public class PicturesController extends BaseController {
 		PageData pd = new PageData();
 		if(Jurisdiction.buttonJurisdiction(menuUrl, "add")){
 			if (null != file && !file.isEmpty()) {
-				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile;		//文件上传路径
+				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG2 + ffile;		//文件上传路径
 				fileName = FileUpload.fileUp(file, filePath, this.get32UUID());				//执行上传
 			}else{
 				System.out.println("上传失败");
@@ -76,12 +77,17 @@ public class PicturesController extends BaseController {
 			pd.put("PICTURES_ID", this.get32UUID());			//主键
 			pd.put("TITLE", "图片");								//标题
 			pd.put("NAME", fileName);							//文件名
-			pd.put("PATH", ffile + "/" + fileName);				//路径
+			pd.put("PATH", "images2/"+ffile + "/" + fileName);				//路径
 			pd.put("CREATETIME", Tools.date2Str(new Date()));	//创建时间
-			pd.put("MASTER_ID", "1");							//附属与
+			// shiro管理的session
+			Subject currentUser = SecurityUtils.getSubject();
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(Const.SESSION_USER);
+			
+			pd.put("MASTER_ID", user.getBZ());							//附属与
 			pd.put("BZ", "图片管理处上传");						//备注
 			//加水印
-			Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);
+			//Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);
 			picturesService.save(pd);
 		}
 		map.put("result", "ok");
@@ -135,14 +141,14 @@ public class PicturesController extends BaseController {
 			if(null == tpz){tpz = "";}
 			String  ffile = DateUtil.getDays(), fileName = "";
 			if (null != file && !file.isEmpty()) {
-				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile;		//文件上传路径
+				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG2 + ffile;		//文件上传路径
 				fileName = FileUpload.fileUp(file, filePath, this.get32UUID());				//执行上传
-				pd.put("PATH", ffile + "/" + fileName);				//路径
+				pd.put("PATH", "images2/"+ffile + "/" + fileName);				//路径
 				pd.put("NAME", fileName);
 			}else{
 				pd.put("PATH", tpz);
 			}
-			Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);//加水印
+			//Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);//加水印
 			picturesService.edit(pd);				//执行修改数据库
 		}
 		mv.addObject("msg","success");
@@ -166,6 +172,15 @@ public class PicturesController extends BaseController {
 			if(null != KEYW && !"".equals(KEYW)){
 				KEYW = KEYW.trim();
 				pd.put("KEYW", KEYW);
+			}
+			// shiro管理的session
+			Subject currentUser = SecurityUtils.getSubject();
+			Session session = currentUser.getSession();
+			User user = (User) session.getAttribute(Const.SESSION_USER);
+			if(user.getBZ() == 1){//商户1：北京中润 全部查询
+				
+			}else{
+				pd.put("MASTER_ID", user.getBZ());
 			}
 			
 			page.setPd(pd);

@@ -29,10 +29,10 @@ public class Const {
 	public static final String WEIXIN	= "admin/config/WEIXIN.txt";	//微信配置路径
 	public static final String WEBSOCKET = "admin/config/WEBSOCKET.txt";//WEBSOCKET配置路径
 	public static final String FILEPATHIMG = "uploadFiles/uploadImgs/";	//图片上传路径(原始不包含产品图片--系统专用)
-	public static final String LINSHIPROPICPATH = "html/product/images/";	//图片上传路径(产品图片)
 	public static final String FILEPATHIMG2 = "html/product/images2/";	//图片上传路径(产品图片)
 	public static final String FILEPATHIMGOSS = "uploadFiles/uploadImgs/productImg/";	//图片上传OSS（暂时本地）
-	public static final String FILEPATHFILE = "uploadFiles/file/";		//文件上传路径
+	public static final String FILEPATHFILE = "uploadFiles/file/";		//文件模板路径
+	public static final String UPFILEPATHFILE = "uploadFiles/upfile/";		//文件上传路径
 	public static final String FILEPATHTWODIMENSIONCODE = "uploadFiles/twoDimensionCode/"; //二维码存放路径
 	public static final String NO_INTERCEPTOR_PATH = ".*/((login)|(logout)|(code)|(app)|(weixin)|(static)|(main)|(websocket)).*";	//不对匹配该值的访问路径拦截（正则）
 	

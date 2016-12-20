@@ -4,7 +4,7 @@
 	
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="pd">
+	<insert id="save" parameterType="pd" useGeneratedKeys="true">
 		insert into ZR_MERCHANT(
 			MERCHANT_NAME,	
 			MERCHANT_LINKMAN,	
@@ -155,6 +155,7 @@
 		<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
 			and m.INPUTDATE &lt;= #{pd.lastLoginEnd} 
 		</if>
+		order by m.MERCHANT_ID desc
 	</select>
 	
 	<!-- 列表(全部) -->
@@ -179,7 +180,41 @@
 			 and a.MERCHANT_ID = #{MERCHANT_ID} 
 			 ]]>
 		</if>
+		order by a.MERCHANT_ID desc
 		
+	</select>
+	
+	<!-- 统计列表 -->
+	<select id="statislistPage" parameterType="page" resultType="pd">
+		SELECT
+				m.MERCHANT_NAME,
+				p.PRODUCT_NAME,
+				sum(o.QUANTITY) count,
+				sum(o.AMOUNT) money,
+				c.CHANNELS_NAME
+			FROM
+				ZR_MERCHANT m
+			LEFT JOIN ZR_PRODUCTS p ON m.MERCHANT_ID = p.MERCHANTID
+			LEFT JOIN ZR_ORDERS o ON p.PRODUCTS_ID = o.PRODUCTID
+			LEFT JOIN ZR_CHANNELS c ON o.CHANNELS_ID = c.CHANNELS_ID
+			where 1 = 1
+			<if test="pd.MERCHANT_ID != null and pd.MERCHANT_ID != ''">
+				and m.MERCHANT_ID = #{pd.MERCHANT_ID}
+			</if>
+			<if test="pd.PRODUCT_NAME != null and pd.PRODUCT_NAME != ''">
+				and p.PRODUCT_NAME LIKE CONCAT(CONCAT('%', #{pd.PRODUCT_NAME}),'%')
+			</if>
+			<if test="pd.lastLoginStart!=null and pd.lastLoginStart!=''"><!-- 登录时间检索 -->
+				and o.INPUTDATE &gt;= #{pd.lastLoginStart} 
+			</if>
+			<if test="pd.lastLoginEnd!=null and pd.lastLoginEnd!=''"><!-- 登录时间检索 -->
+				and o.INPUTDATE &lt;= #{pd.lastLoginEnd} 
+			</if>
+			GROUP BY
+				m.MERCHANT_ID,
+				p.PRODUCTS_ID
+			ORDER BY
+				o.INPUTDATE DESC
 	</select>
 	
 	<!-- 批量删除 -->

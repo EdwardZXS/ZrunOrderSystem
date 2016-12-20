@@ -51,6 +51,12 @@ public class PicturesService {
 	public List<PageData> listAll(PageData pd)throws Exception{
 		return (List<PageData>)dao.findForList("PicturesMapper.listAll", pd);
 	}
+	/*
+	 *ajaxlist列表(全部)
+	 */
+	public List<PageData> ajaxlist(Page page)throws Exception{
+		return (List<PageData>)dao.findForList("PicturesMapper.ajaxlistPage", page);
+	}
 	
 	/*
 	* 通过id获取数据

@@ -24,6 +24,7 @@
 	<mvc:resources mapping="/static/**" location="/,/static/" />
 	<mvc:resources mapping="/plugins/**" location="/,/plugins/" />
 	<mvc:resources mapping="/uploadFiles/**" location="/,/uploadFiles/" /> 
+	<mvc:resources mapping="/html/**" location="/,/html/" /> 
 	<mvc:resources location="/" mapping="/**/*.html"/>
 
 	<!-- 访问拦截  -->  
@@ -31,6 +32,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/**/**"/>
 			<mvc:exclude-mapping path="/orders/save.do"/>
+			<mvc:exclude-mapping path="/sms/**"/><!-- 短信上行同步 获取回复信息 -->
 			<mvc:exclude-mapping path="/html/**/**"/>
 			<bean class="com.fh.interceptor.LoginHandlerInterceptor"/>
 		</mvc:interceptor>

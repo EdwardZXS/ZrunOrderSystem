@@ -1,6 +1,5 @@
 package com.fh.controller.system.imgs;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,34 +10,28 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
-import com.fh.service.system.imgs.ImgsService;
 import com.fh.util.AppUtil;
-import com.fh.util.Const;
-import com.fh.util.DateUtil;
-import com.fh.util.DateUtil2;
-import com.fh.util.FileUpload;
-import com.fh.util.FileUtil;
-import com.fh.util.Jurisdiction;
 import com.fh.util.ObjectExcelView;
+import com.fh.util.Const;
 import com.fh.util.PageData;
+import com.fh.util.Tools;
+import com.fh.util.Jurisdiction;
+import com.fh.service.system.imgs.ImgsService;
 
 /** 
  * 类名称：ImgsController
@@ -57,39 +50,20 @@ public class ImgsController extends BaseController {
 	 * 新增
 	 */
 	@RequestMapping(value="/save")
-	public ModelAndView save(@RequestParam("file") MultipartFile file) throws Exception{
+	public ModelAndView save() throws Exception{
 		logBefore(logger, "新增Imgs");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		HttpServletRequest request = this.getRequest();
-		// 获取路径
-		// String contextPath = request.getContextPath();
-		// String realPath = request.getRealPath("");
-		// String lujing = contextPath+"/"+Const.LINSHIPROPICPATH;
-		// 先将图片存储到磁盘指定目录，获得磁盘文件条目工厂
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// 设置图片上传路径
-		String filePath = "E:/pic/";
-		factory.setRepository(new File(filePath));
-		String newFileName = "";
-		if (null != file && !file.isEmpty()) {
-			// 执行上传
-			newFileName = FileUpload.fileUp(file, filePath, this.get32UUID());
-			filePath = filePath + newFileName;
-		}else{
-			System.out.println("上传失败");
-		}
-		pd.put("PRODUCTID", 1);	//产品ID
-		pd.put("PATH", filePath);	//路径
-		pd.put("TYPE", 1);
-		pd.put("SEQUENCE", "1");
-		pd.put("CREATEDATE", DateUtil2.getNowDateTime());	//生成日期
+		// pd.put("IMGS_ID", this.get32UUID());	//主键
+		pd.put("PRODUCTID", "");	//产品ID
+		pd.put("PATH", "");	//路径
+		pd.put("","");
+		pd.put("CREATEDATE", "");	//生成日期
 		pd.put("BAK20", "");	//备注预留字段
 		imgsService.save(pd);
 		mv.addObject("msg","success");
-		mv.addObject("filePath", filePath);
 		mv.setViewName("save_result");
 		return mv;
 	}
@@ -162,7 +136,8 @@ public class ImgsController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		try {
-			mv.setViewName("system/imgs/imgs_add");
+			mv.setViewName("system/imgs/imgs_edit");
+			mv.addObject("msg", "save");
 			mv.addObject("pd", pd);
 		} catch (Exception e) {
 			logger.error(e.toString(), e);

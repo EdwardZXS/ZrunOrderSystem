@@ -37,15 +37,16 @@
 					<td style="vertical-align:top;"> 
 					 	<select class="chzn-select" name="MERCHANTSTATUS" id="MERCHANTSTATUS" data-placeholder="根据状态查询" style="vertical-align:top;width: 120px;">
 							<option value=""></option>
+							<option value="">全部</option>
 							<option value="2" <c:if test="${'2' eq pd.MERCHANTSTATUS}">selected</c:if>>正常</option>
 							<option value="3" <c:if test="${'3' eq pd.MERCHANTSTATUS}">selected</c:if>>异常</option>
 							<!-- <option value="3">异常</option> -->
 					  	</select>
 					</td>
 					<td style="vertical-align:top;"><button class="btn btn-mini btn-light" onclick="search();"  title="检索"><i id="nav-search-icon" class="icon-search"></i></button></td>
-					<c:if test="${QX.cha == 1 }">
+					<%-- <c:if test="${QX.cha == 1 }">
 					<td style="vertical-align:top;"><a class="btn btn-mini btn-light" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="icon-download-alt"></i></a></td>
-					</c:if>
+					</c:if> --%>
 				</tr>
 			</table>
 			<!-- 检索  -->

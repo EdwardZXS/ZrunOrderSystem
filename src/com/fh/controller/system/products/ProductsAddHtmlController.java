@@ -70,6 +70,8 @@ public class ProductsAddHtmlController extends BaseController {
 			 * 以下是给模版用的字段
 			 */
 			root.put("MERCHANT_NAME", pd.get("MERCHANT_NAME"));//为了查询图片与套餐表
+			Integer sums=Integer.parseInt(pd.get("DATETIMES").toString())*86400;
+			root.put("DATETIMES",sums.toString());//倒计时（天）
 			root.put("PRODUCT_ANOTHERNAME", pd.get("PRODUCT_ANOTHERNAME"));//产品别名
 			root.put("PRODUCTS_ID", pd.get("PRODUCTS_ID"));//主键ID
 			root.put("MERCHANTID", pd.get("MERCHANTID"));//所属商户ID
@@ -167,6 +169,8 @@ public class ProductsAddHtmlController extends BaseController {
 			 * 以下是给模版用的字段
 			 */
 			root.put("MERCHANT_NAME", pd.get("MERCHANT_NAME"));//为了查询图片与套餐表
+			Integer sums=Integer.parseInt(pd.get("DATETIMES").toString())*86400;
+			root.put("DATETIMES",sums.toString());//倒计时（天）
 			root.put("PRODUCT_ANOTHERNAME", pd.get("PRODUCT_ANOTHERNAME"));//产品别名
 			root.put("PRODUCTS_ID", pd.get("PRODUCTS_ID"));//主键ID
 			root.put("MERCHANTID", pd.get("MERCHANTID"));//所属商户ID

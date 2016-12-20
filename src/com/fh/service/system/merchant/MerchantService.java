@@ -66,6 +66,11 @@ public class MerchantService {
 		dao.delete("MerchantMapper.deleteAll", ArrayDATA_IDS);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<PageData> getStatistical(Page page) throws Exception {
+		return (List<PageData>)dao.findForList("MerchantMapper.statislistPage", page);
+	}
+
 
 	
 }

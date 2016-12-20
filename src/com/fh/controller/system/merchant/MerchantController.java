@@ -147,7 +147,9 @@ public class MerchantController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		List<PageData> userList = userService.listAllUser(pd);
+		PageData pdu = new PageData();
+		pdu.put("BZ", 1);
+		List<PageData> userList = userService.listAllUser(pdu);
 		Subject currentUser = SecurityUtils.getSubject();
 		Session session = currentUser.getSession();
 		User user = (User) session.getAttribute(Const.SESSION_USER);
@@ -173,7 +175,9 @@ public class MerchantController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		List<PageData> userList = userService.listAllUser(pd);
+		PageData pdu = new PageData();
+		pdu.put("BZ", 1);
+		List<PageData> userList = userService.listAllUser(pdu);
 		Subject currentUser = SecurityUtils.getSubject();
 		Session session = currentUser.getSession();
 		User user = (User) session.getAttribute(Const.SESSION_USER);

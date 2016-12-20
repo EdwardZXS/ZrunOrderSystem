@@ -83,36 +83,7 @@
 			$("#MERCHANT_ADDRESS").focus();
 			return false;
 		}
-		if($("#MERCHANT_QQ").val()==""){
-			$("#MERCHANT_QQ").tips({
-				side:3,
-	            msg:'请输入商户QQ',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#MERCHANT_QQ").focus();
-			return false;
-		}
-		if($("#USERID").val()==""){
-			$("#USERID").tips({
-				side:3,
-	            msg:'请输入所属销售ID',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#USERID").focus();
-			return false;
-		}
-		if($("#EXPLAINS").val()==""){
-			$("#EXPLAINS").tips({
-				side:3,
-	            msg:'请输入描述',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#EXPLAINS").focus();
-			return false;
-		}
+		
 		$("#Form").submit();
 		$("#zhongxin").hide();
 		$("#zhongxin2").show();
@@ -143,7 +114,8 @@
 				<td style="width:70px;text-align: right;padding-top: 13px;">所属销售:</td>
 				<td>
 					<select class="chzn-select" name="USERID" id="USERID" data-placeholder="请选择销售" style="vertical-align:top;width: 220px;">
-						<option value="">- 请选择 -</option>
+						<option value=""></option>
+						<option value="">全部</option>
 						<c:forEach items="${userList}" var="user">
 							<option value="${user.USER_ID}" <c:if test="${pd.USERID == user.USER_ID}">selected</c:if>>${user.NAME}</option>
 						</c:forEach>

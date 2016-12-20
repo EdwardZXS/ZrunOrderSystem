@@ -47,7 +47,7 @@ body{background: #c00000;}
                    <div class="time-count">
                         <div id="remainTime_1" class="jltimer"><span>01</span>天<span>12</span>小时<span>27</span>分<span>50</span>秒</div>
                         <script language="javascript">
-                            addTimeLesser(1, 131321);
+                            addTimeLesser(1, ${DATETIMES});
                         </script>
         </div>
        </div>             
@@ -307,7 +307,7 @@ body{background: #c00000;}
 <nav>
   <ul class="Transverse">
      <li><a href="#buy"><strong>在线下单</strong></a></li> 
-	 <li><a href="javascript:volid(0);"><strong>电话咨询:${PHONE}</strong></a></li>  
+	 <li><a href="tel:${PHONE}"><strong>电话咨询</strong></a></li>  
   	 
   </ul>
 </nav>

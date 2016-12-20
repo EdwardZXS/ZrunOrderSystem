@@ -51,11 +51,15 @@
 			pa.PACKAGES_ID,
 			pr.PRODUCTS_ID,
 			pr.PRODUCT_NAME
-		from 
-			ZR_PACKAGES pa, ZR_PRODUCTS pr
-		where pa.PRODUCTID = pr.PRODUCTS_ID
-		<if test="PACKAGES_ID != null and PACKAGES_ID != ''"></if> 
-			and PACKAGES_ID = #{PACKAGES_ID}
+		from ZR_PACKAGES pa
+		LEFT JOIN ZR_PRODUCTS pr on pr.PRODUCTS_ID = pa.PRODUCTID
+		where 1=1
+		<if test="PACKAGES_ID != null and PACKAGES_ID != ''">
+			and pa.PACKAGES_ID = #{PACKAGES_ID}
+		</if>
+		<if test="PRODUCTS_ID != null and PRODUCTS_ID != ''">
+			and pa.PRODUCTID = #{PRODUCTS_ID}
+		</if> 
 	</select>
 	
 	
@@ -69,10 +73,9 @@
 				pa.PACKAGES_ID,
 				pr.PRODUCTS_ID,
 				pr.PRODUCT_NAME
-		from 
-				ZR_PACKAGES pa, ZR_PRODUCTS pr
-		where pa.PRODUCTID = pr.PRODUCTS_ID
-		and 1 = 1
+		from ZR_PACKAGES pa
+		LEFT JOIN ZR_PRODUCTS pr on pr.PRODUCTS_ID = pa.PRODUCTID
+		where 1 = 1
 		<if test="pd.PRODUCTSID != null and pd.PRODUCTSID !=''">
 			and pr.PRODUCTS_ID = #{pd.PRODUCTSID}
 		</if>
@@ -108,7 +111,7 @@
 		from 
 				ZR_PACKAGES a 
 		where 1=1 
-		<if test="PRODUCTID != null and PRODUCTID != ''">
+		<if test="PRODUCTS_ID != null and PRODUCTS_ID != ''">
 			and a.PRODUCTID=#{PRODUCTS_ID}
 		</if>
 		 

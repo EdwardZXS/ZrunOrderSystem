@@ -37,15 +37,16 @@
 					<td style="vertical-align:top;"> 
 					 	<select class="chzn-select" name="PRODUCTSTATUS" id="PRODUCTSTATUS" data-placeholder="请选择状态" style="vertical-align:top;width: 120px;">
 							<option value=""></option>
+							<option value="">全部</option>
 							<option value="1" <c:if test="${'1' eq pd.PRODUCTSTATUS }">selected</c:if>>未生成</option>
 							<option value="2" <c:if test="${'2' eq pd.PRODUCTSTATUS }">selected</c:if>>正常</option>
 							<option value="3" <c:if test="${'3' eq pd.PRODUCTSTATUS }">selected</c:if>>下架</option>
 					  	</select>
 					</td>
 					<td style="vertical-align:top;"><button class="btn btn-mini btn-light" onclick="search();"  title="检索"><i id="nav-search-icon" class="icon-search"></i></button></td>
-					<c:if test="${QX.cha == 1 }">
+					<%-- <c:if test="${QX.cha == 1 }">
 					<td style="vertical-align:top;"><a class="btn btn-mini btn-light" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="icon-download-alt"></i></a></td>
-					</c:if>
+					</c:if> --%>
 				</tr>
 			</table>
 			<!-- 检索  -->
@@ -74,6 +75,7 @@
 						<!-- <th class="center">库存</th> -->
 						<th class="center">输入日期</th>
 						<th class="center">状态</th>
+						<!-- <th class="center">导入评论</th> -->
 						<th class="center">页面地址</th>
 						<th class="center">套餐管理</th>
 						<th class="center">操作</th>
@@ -110,8 +112,8 @@
 											<c:if test="${var.PRODUCTSTATUS == 2 }">正常</c:if>
 											<c:if test="${var.PRODUCTSTATUS == 3 }">下架</c:if>
 										</td>
-										<td>${var.PRODUCT_URL}</td>
-										<%-- <td><a href="${var.PRODUCT_URL}">点击查看</a></td> --%>
+										<%-- <td><a href="javascript:;" onclick="fromExcel(${var.PRODUCTS_ID});">添加评论</a></td> --%>
+										<td><a href="javascript:;" onclick="urlGenerate(${var.PRODUCTS_ID},${var.MERCHANTID});">点击查看</a></td>
 										<td><a href="packages/list.do?PRODUCTSID=${var.PRODUCTS_ID }">套餐管理</a></td>
 								<td style="width: 30px;" class="center">
 									<div class='hidden-phone visible-desktop btn-group'>
@@ -244,11 +246,19 @@
 		//生成html
 		function tohtml(Id){
 		
-		var url = "<%=basePath%>productsAddHtml/htmlProducts.do?PRODUCTS_ID="+Id;
-			top.jzts();
-			$.get(url,function(data){
-				nextPage(${page.currentPage});
-			});
+			var url1 = "<%=basePath%>products/checkPackage.do?PRODUCTS_ID="+Id;
+			$.getJSON(url1, function(json){  
+	   			if(json.RESULT == 'NO'){// 产品下无套餐，不可生成静态页面
+	   				alert("请先添加套餐，再生成静态页面");
+	   			}else if(json.RESULT == 'YES'){// 产品下有套餐，可生成静态页
+					var url = "<%=basePath%>productsAddHtml/htmlProducts.do?PRODUCTS_ID="+Id;
+					top.jzts();
+					$.get(url,function(data){
+						nextPage(${page.currentPage});
+					});
+	   			}
+	       });  
+			
 		}
 		//修改
 		function edit(Id){
@@ -352,6 +362,45 @@
 		//导出excel
 		function toExcel(){
 			window.location.href='<%=basePath%>products/excel.do';
+		}
+		//打开上传excel页面
+		function fromExcel(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="EXCEL 导入到数据库";
+			 diag.URL = '<%=basePath%>evaluate/goUploadExcel.do?PRODUCTS_ID='+Id;
+			 diag.Width = 300;
+			 diag.Height = 150;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location.reload()",100);
+					 }else{
+						 nextPage(${page.currentPage});
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		//查看生成的url
+		function urlGenerate(prId,meId){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="url查看";
+			 diag.URL = '<%=basePath%>products/goUrls.do?PRODUCTS_ID='+prId+'&MERCHANTID='+meId;
+			 diag.Width = 700;
+			 diag.Height = 250;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 nextPage(${page.currentPage});
+				}
+				diag.close();
+			 };
+			 diag.show();
 		}
 		</script>
 		
