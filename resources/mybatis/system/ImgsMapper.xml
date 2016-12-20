@@ -26,16 +26,32 @@
 	<!-- 删除-->
 	<delete id="delete" parameterType="pd">
 		delete from ZR_IMGS
-		where 
-			IMGS_ID = #{IMGS_ID}
+		where 1 = 1
+		<if test="IMGS_ID != null and IMGS_ID != ''">
+			and IMGS_ID = #{IMGS_ID}
+		</if>
+		<if test="PRODUCTID != null and PRODUCTID != ''">
+			and PRODUCTID = #{PRODUCTID}
+		</if>
 	</delete>
 	
 	
 	<!-- 修改 -->
 	<update id="edit" parameterType="pd">
 		update  ZR_IMGS
-			set 
+			set
+			<if test="PRODUCTID != null and PRODUCTID !=''">
+				PRODUCTID = #{PRODUCTID},
+			</if> 
+			<if test="PATH != null and PATH !=''">
+				PATH = #{PATH},
+			</if> 
+			<if test="TYPE != null and TYPE !=''">
+				TYPE = #{TYPE},
+			</if> 
+			<if test="SEQUENCE != null and SEQUENCE !=''">
 				SEQUENCE = #{SEQUENCE},
+			</if> 
 			IMGS_ID = IMGS_ID
 			where 
 				IMGS_ID = #{IMGS_ID}

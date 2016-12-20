@@ -204,10 +204,10 @@
 		<input type="hidden" name="PRODUCTS_ID" id="PRODUCTS_ID" value="${pd.PRODUCTS_ID}"/>
 		<div id="zhongxin">
 		<table id="table_report" class="table table-striped table-bordered table-hover">
-			<tr>
+			<%-- <tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">所属商户:</td>
 				<td>
-					<%-- <input type="text" name="PRODUCT_NAME" id="PRODUCT_NAME" value="${pd.PRODUCT_NAME}" maxlength="32" placeholder="这里输入产品名称" title="产品名称"/> --%>
+					<input type="text" name="PRODUCT_NAME" id="PRODUCT_NAME" value="${pd.PRODUCT_NAME}" maxlength="32" placeholder="这里输入产品名称" title="产品名称"/>
 					<select class="chzn-select" name="MERCHANTID" id="MERCHANTID" data-placeholder="请选择所属商户" style="vertical-align:top;width: 220px;">
 						<option value=""></option>
 						<option value="">全部</option>
@@ -218,7 +218,7 @@
 				</td>
 				<td style="width:70px;text-align: right;padding-top: 13px;">创建人员:</td>
 				<td>
-					<%-- <input type="text" name="PRODUCT_ANOTHERNAME" id="PRODUCT_ANOTHERNAME" value="${pd.PRODUCT_ANOTHERNAME}" maxlength="32" placeholder="这里输入产品别名" title="产品别名"/> --%>
+					<input type="text" name="PRODUCT_ANOTHERNAME" id="PRODUCT_ANOTHERNAME" value="${pd.PRODUCT_ANOTHERNAME}" maxlength="32" placeholder="这里输入产品别名" title="产品别名"/>
 					<select class="chzn-select" name="USERID" id="USERID" data-placeholder="请选择创建人员" style="vertical-align:top;width: 220px;">
 						<option value=""></option>
 						<option value="">全部</option>
@@ -227,7 +227,7 @@
 						</c:forEach>
 					</select>
 				</td>
-			</tr>
+			</tr> --%>
 			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">产品名称:</td>
 				<td><input type="text" name="PRODUCT_NAME" id="PRODUCT_NAME" value="${pd.PRODUCT_NAME}" maxlength="32" placeholder="这里输入产品名称" title="产品名称"/></td>
@@ -258,15 +258,27 @@
 			</tr>
 			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">尺码:</td>
-				<td><input type="text" name="SIZE" id="SIZE" value="${pd.SIZE}" maxlength="32" placeholder="这里输入尺码" title="尺码不能以#号开头或结尾"/></td>
+				<td>
+					<input type="text" name="SIZE" id="SIZE" value="${pd.SIZE}" maxlength="32" placeholder="这里输入尺码" title="尺码不能以#号开头或结尾"/><br/>
+					<span id="sizetishi" style="color: red;"></span>
+				</td>
 				<td style="width:70px;text-align: right;padding-top: 13px;">颜色:</td>
-				<td><input type="text" name="COLOR" id="COLOR" value="${pd.COLOR}" maxlength="32" placeholder="这里输入颜色" title="颜色不能以#号开头或结尾"/></td>
+				<td>
+					<input type="text" name="COLOR" id="COLOR" value="${pd.COLOR}" maxlength="32" placeholder="这里输入颜色" title="颜色不能以#号开头或结尾"/><br/>
+					<span id="colortishi" style="color: red;"></span>
+				</td>
 			</tr>
 			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">销量:</td>
 				<td><input type="text" name="SALE_AMOUNT" id="SALE_AMOUNT" value="${pd.SALE_AMOUNT}" maxlength="32" placeholder="这里输入销量" title="销量"/></td>
 				<td style="width:70px;text-align: right;padding-top: 13px;">库存:</td>
 				<td><input type="text" name="STOCK" id="STOCK" value="${pd.STOCK}" maxlength="32" placeholder="这里输入库存" title="库存"/></td>
+			</tr>
+			<tr>
+				<td style="width:70px;text-align: right;padding-top: 13px;">手机号:</td>
+				<td><input type="text" name="PHONE" id="PHONE" value="${pd.PHONE}" maxlength="32" placeholder="这里输入销量" title="销量"/></td>
+				<td style="width:70px;text-align: right;padding-top: 13px;">联系QQ:</td>
+				<td><input type="text" name="QQ" id="QQ" value="${pd.QQ}" maxlength="32" placeholder="这里输入库存" title="库存"/></td>
 			</tr>
 			<tr>
 				<td style="width:70px;text-align: right;padding-top: 13px;">商品状态:</td>
@@ -291,7 +303,7 @@
 			</tr>
 			<tr>
 			<tr>
-				<c:if test="${msg eq 'save'}">
+				<%-- <c:if test="${msg eq 'save'}"> --%>
 					<td style="width:70px;text-align: right;padding-top: 13px;">添加图片:</td>
 				<td colspan="3">
 				<table style="width: 100%;">
@@ -300,7 +312,7 @@
 					<a href="#myModal" onclick="uploadfiles('imgs1','path1');" role="button" class="btn" data-toggle="modal">商品封面</a>
 					</td>
 					<td>
-					<div id="imgs1"></div><input style="float: left;" type="text" id="path1" name="path1" value=""/>
+					<div id="imgs1"></div><input style="float: left;" type="text" id="path1" name="path1" value="${pd.path1}"/>
 					<span class="widget-toolbar" style="line-height:7px;padding:0px;"><a data-action="close" onclick="deleInput('path1');" title="清空" ><i class="icon-remove"></i></a></span>
 					</td>
 					<td rowspan="3" width="130px"><span style="color: red;">如果修改图片请先清空输入框，再重新选择!!!</span></td>
@@ -310,7 +322,7 @@
 					<a href="#myModal" onclick="uploadfiles('imgs2','path2');" role="button" class="btn" data-toggle="modal">物流信息</a>
 					</td>
 					<td>
-					<div id="imgs2"></div><input type="text" id="path2" name="path2" value=""/>
+					<div id="imgs2"></div><input type="text" id="path2" name="path2" value="${pd.path2}"/>
 					<span class="widget-toolbar" style="line-height:7px;padding:0px;"><a data-action="close" onclick="deleInput('path2');" title="清空" ><i class="icon-remove"></i></a></span>
 					</td>
 					</tr>
@@ -319,20 +331,27 @@
 					<a href="#myModal" onclick="uploadfiles('imgs3','path3');" role="button" class="btn" data-toggle="modal">商品介绍</a>
 					</td>
 					<td>
-					<div id="imgs3"></div><input type="text" id="path3" name="path3" value=""/>
+					<div id="imgs3"></div><input type="text" id="path3" name="path3" value="${pd.path3}"/>
 					<span class="widget-toolbar" style="line-height:7px;padding:0px;"><a data-action="close" onclick="deleInput('path3');" title="清空" ><i class="icon-remove"></i></a></span>
 					</td>
 					</tr>
 				</table>
 				</td>
 					
-				</c:if>
+				<%-- </c:if> --%>
 			</tr>
 			<tr>
-				<td style="width:70px;text-align: right;padding-top: 13px;">产品描述:</td>
+				<td style="width:70px;text-align: right;padding-top: 13px;">抢购描述:</td>
 				<%-- <td><input type="text" name="EXPLAINS" id="EXPLAINS" value="${pd.EXPLAINS}" maxlength="32" placeholder="这里输入产品描述" title="产品描述"/></td> --%>
 				<td colspan="3">
 					<textarea name="EXPLAINS" id="EXPLAINS" style="width:500px" rows="5">${pd.EXPLAINS}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td style="width:70px;text-align: right;padding-top: 13px;">订单描述:</td>
+				<%-- <td><input type="text" name="EXPLAINS" id="EXPLAINS" value="${pd.EXPLAINS}" maxlength="32" placeholder="这里输入产品描述" title="产品描述"/></td> --%>
+				<td colspan="3">
+					<textarea name="BAK10" id="BAK10" style="width:500px" rows="5">${pd.BAK10}</textarea>
 				</td>
 			</tr>
 			<tr>
@@ -412,7 +431,7 @@
 			  	//判断数组
 			  	var obj2=p3.split(";");  
 			  	//根据数组删除对应path
-			  	alert(obj2.length);
+			  	//alert(obj2.length);
 			  	if(obj2.length>1){
 			  		var ps = $(this).attr("id");//取消的id path
 					p3=p3.replace(";"+ps,"");
@@ -447,6 +466,10 @@
 		   }
 		    $("input").trigger("chosen:updated"); 
 			});
+		
+			// 颜色尺寸添加注释
+			$("#sizetishi").text("按格式添加：M#L#XL（勿以#号开头和结尾）");
+			$("#colortishi").text("按格式添加：赤#橙#黄（勿以#号开头和结尾）");
 		});
 		
 		// 判断输入的字符是否为英文字母    
@@ -561,7 +584,7 @@
 		}
 		// 上下页图片
 		function uploadfiles2(pasr){
-		alert(pasr);
+		//alert(pasr);
 		var dang = parseInt($("#dangqian").text());
 		if(dang == ''){
 			dang=1;

@@ -67,6 +67,14 @@ public class ProductsService {
 				dao.save("ImgsMapper.save", pdimg);
 			}
 		}
+		/*
+		 * 默认添加个原产品
+		 */
+		PageData pdpa=new PageData();
+		pdpa.put("PRODUCTID",pd.get("PRODUCTS_ID"));//
+		pdpa.put("PACKAGE_NAME", "产品原件");//
+		pdpa.put("PACKAGE_PRICE", pd.get("PRODUCT_UNIT"));//
+		dao.save("PackagesMapper.save", pdpa);
 	}
 	
 	/*
@@ -78,8 +86,60 @@ public class ProductsService {
 	
 	/*
 	* 修改
+	* 注意：若修改商品的图片，要先将原有的图片删除
 	*/
 	public void edit(PageData pd)throws Exception{
+		/*PageData pdimg = new PageData();
+		pdimg.put("PRODUCTID", pd.getString("PRODUCTS_ID"));
+		// 根据商品的ID去图片表现删除相关数据
+		dao.delete("ImgsMapper.delete", pdimg);
+		
+		// 删除以后重新保存图片信息
+		int type;
+		// PRODUCTID
+		pdimg.put("PRODUCTID", pd.get("PRODUCTS_ID"));
+		// CREATEDATE
+		pdimg.put("CREATEDATE", new Date());
+		String path1 = pd.getString("path1");// 商品封面
+		String path2 = pd.getString("path2");// 物流信息
+		String path3 = pd.getString("path3");// 商品介绍
+		if (path1 != null) {
+			type = 1;
+			// PATH
+			pdimg.put("PATH", path1);
+			// TYPE
+			pdimg.put("TYPE", type);
+			// SEQUENCE
+			pdimg.put("SEQUENCE", 1);
+			// 保存图片
+			dao.save("ImgsMapper.save", pdimg);
+		}
+		if (path2 != null) {
+			type = 2;
+			// PATH
+			pdimg.put("PATH", path2);
+			// TYPE
+			pdimg.put("TYPE", type);
+			// SEQUENCE
+			pdimg.put("SEQUENCE", 2);
+			// 保存图片
+			dao.save("ImgsMapper.save", pdimg);
+		}
+		if (path3 != null) {
+			type = 3;
+			pdimg.put("TYPE", type);
+			String[] path3s = path3.split(";");
+			for (String p3 : path3s) {
+				pdimg.put("PATH", p3);
+				pdimg.put("SEQUENCE", type++);
+				dao.save("ImgsMapper.save", pdimg);
+			}
+		
+		// 根据商品的id去查询商品下的所有照片
+		PageData pdimg = new PageData();
+		pdimg.put("PRODUCTID", pd.getString("PRODUCTS_ID"));
+		Object findForList = dao.findForList("ImgsMapper.listAll", pdimg);
+		}*/
 		dao.update("ProductsMapper.edit", pd);
 	}
 	

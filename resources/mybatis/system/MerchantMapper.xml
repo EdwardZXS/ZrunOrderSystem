@@ -4,7 +4,7 @@
 	
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="pd">
+	<insert id="save" parameterType="pd" useGeneratedKeys="true">
 		insert into ZR_MERCHANT(
 			MERCHANT_NAME,	
 			MERCHANT_LINKMAN,	
@@ -190,11 +190,13 @@
 				m.MERCHANT_NAME,
 				p.PRODUCT_NAME,
 				sum(o.QUANTITY) count,
-				sum(o.AMOUNT) money
+				sum(o.AMOUNT) money,
+				c.CHANNELS_NAME
 			FROM
 				ZR_MERCHANT m
 			LEFT JOIN ZR_PRODUCTS p ON m.MERCHANT_ID = p.MERCHANTID
 			LEFT JOIN ZR_ORDERS o ON p.PRODUCTS_ID = o.PRODUCTID
+			LEFT JOIN ZR_CHANNELS c ON o.CHANNELS_ID = c.CHANNELS_ID
 			where 1 = 1
 			<if test="pd.MERCHANT_ID != null and pd.MERCHANT_ID != ''">
 				and m.MERCHANT_ID = #{pd.MERCHANT_ID}
@@ -211,6 +213,8 @@
 			GROUP BY
 				m.MERCHANT_ID,
 				p.PRODUCTS_ID
+			ORDER BY
+				o.INPUTDATE DESC
 	</select>
 	
 	<!-- 批量删除 -->

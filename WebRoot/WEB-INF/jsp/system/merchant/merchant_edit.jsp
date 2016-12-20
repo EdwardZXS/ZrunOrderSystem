@@ -83,36 +83,7 @@
 			$("#MERCHANT_ADDRESS").focus();
 			return false;
 		}
-		if($("#MERCHANT_QQ").val()==""){
-			$("#MERCHANT_QQ").tips({
-				side:3,
-	            msg:'请输入商户QQ',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#MERCHANT_QQ").focus();
-			return false;
-		}
-		if($("#USERID").val()==""){
-			$("#USERID").tips({
-				side:3,
-	            msg:'请输入所属销售ID',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#USERID").focus();
-			return false;
-		}
-		if($("#EXPLAINS").val()==""){
-			$("#EXPLAINS").tips({
-				side:3,
-	            msg:'请输入描述',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#EXPLAINS").focus();
-			return false;
-		}
+		
 		$("#Form").submit();
 		$("#zhongxin").hide();
 		$("#zhongxin2").show();

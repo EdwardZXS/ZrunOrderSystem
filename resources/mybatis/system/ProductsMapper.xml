@@ -4,7 +4,7 @@
 	
 	
 	<!-- 新增-->
-	<insert id="save" parameterType="pd" keyProperty="PRODUCTS_ID">
+	<insert id="save" parameterType="pd" useGeneratedKeys="true" keyProperty="PRODUCTS_ID">
 		insert into ZR_PRODUCTS(
 			MERCHANTID,	
 			USERID,	
@@ -119,6 +119,9 @@
 				<if test="EXPLAINS != null and EXPLAINS !=''">
 					EXPLAINS = #{EXPLAINS},
 				</if>
+				<if test="BAK10 != null and BAK10 !=''">
+					BAK10 = #{BAK10},
+				</if>
 				<if test="PRODUCT_URL != null and PRODUCT_URL !=''">
 					PRODUCT_URL = #{PRODUCT_URL},
 				</if>
@@ -150,7 +153,8 @@
 			PRODUCTSTATUS,	
 			PRODUCT_URL,	
 			EXPLAINS,	
-			BAK10,	
+			BAK10,
+			DATETIMES,	
 			PRODUCTS_ID
 		from 
 			ZR_PRODUCTS
@@ -226,6 +230,9 @@
 		LEFT JOIN SYS_USER u ON u.USER_ID = p.USERID
 		LEFT JOIN SYS_DICTIONARIES d ON d.ZD_ID = p.ZD_ID
 		where 1 = 1
+		<if test="pd.MERCHANTID != null and pd.MERCHANTID != ''">
+			and p.MERCHANTID = #{pd.MERCHANTID} 
+		</if>
 		<if test="pd.PRODUCT_NAME != null and pd.PRODUCT_NAME != ''">
 			and p.PRODUCT_NAME LIKE CONCAT(CONCAT('%', #{pd.PRODUCT_NAME}),'%')
 		</if>

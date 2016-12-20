@@ -56,6 +56,9 @@ public class OrdersService {
 	public void edit(PageData pd)throws Exception{
 		dao.update("OrdersMapper.edit", pd);
 	}
+	public void Autoedit()throws Exception{
+		dao.update("OrdersMapper.Autoedit", new PageData());
+	}
 	
 	/*
 	*列表

@@ -133,6 +133,14 @@
 			where 
 				ORDERS_ID = #{ORDERS_ID}
 	</update>
+	<!-- 定时器调用 -修改状态 -->
+	<update id="Autoedit" parameterType="pd">
+		update  ZR_ORDERS
+			set 
+				ORDERSTATUS = 7 
+			where 
+				INPUTDATE &gt; BAK40 and ORDERSTATUS=1 
+	</update>
 	
 	
 	<!-- 通过ID获取数据 -->
@@ -253,6 +261,13 @@ JOIN ZR_PRODUCTS p on p.PRODUCTS_ID=a.PRODUCTID
 				a.ORDERS_ID
 		from 
 				ZR_ORDERS a 
+		where 1=1 
+		<if test="MIDS != null and MIDS !=''">
+			and a.MIDS LIKE CONCAT(CONCAT('%', #{MIDS}),'%') 
+		</if>
+		<if test="ORDERSTATUS != null and ORDERSTATUS !=''">
+			and a.ORDERSTATUS=#{ORDERSTATUS} 
+		</if>
 		 order by a.ORDERS_ID desc 
 	</select>
 	

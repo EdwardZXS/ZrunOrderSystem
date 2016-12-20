@@ -44,9 +44,9 @@
 					  	</select>
 					</td>
 					<td style="vertical-align:top;"><button class="btn btn-mini btn-light" onclick="search();"  title="检索"><i id="nav-search-icon" class="icon-search"></i></button></td>
-					<c:if test="${QX.cha == 1 }">
+					<%-- <c:if test="${QX.cha == 1 }">
 					<td style="vertical-align:top;"><a class="btn btn-mini btn-light" onclick="toExcel();" title="导出到EXCEL"><i id="nav-search-icon" class="icon-download-alt"></i></a></td>
-					</c:if>
+					</c:if> --%>
 				</tr>
 			</table>
 			<!-- 检索  -->
@@ -380,6 +380,23 @@
 					 }else{
 						 nextPage(${page.currentPage});
 					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		//查看生成的url
+		function urlGenerate(prId,meId){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="url查看";
+			 diag.URL = '<%=basePath%>products/goUrls.do?PRODUCTS_ID='+prId+'&MERCHANTID='+meId;
+			 diag.Width = 700;
+			 diag.Height = 250;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 nextPage(${page.currentPage});
 				}
 				diag.close();
 			 };

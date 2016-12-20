@@ -127,17 +127,19 @@ public class ProductsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		// 获取当前用户USERID和用户所属商户MERCHANTID
+		pd.put("USERID", user.getUSER_ID());
+		pd.put("MERCHANTID", user.getBZ());
 		// 算出节省 用原价减去现销售价
 		double save = Double.parseDouble(pd.getString("PRODUCT_PRICE")) - Double.parseDouble(pd.getString("PRODUCT_UNIT"));
 		// 获取商户的QQ和手机
-		PageData merchant = merchantService.findById(pd);
 		pd.put("PRODUCT_URL", PathUtil.PathAddress()+"html/product/"+pd.getString("PRODUCT_ANOTHERNAME")+".html");
-		pd.put("PHONE", merchant.getString("MERCHANT_PHONE"));
-		pd.put("QQ", merchant.getString("MERCHANT_QQ"));
 		pd.put("SAVE", save);// 节省
 		pd.put("INPUTDATE", new Date());	//输入日期
 		pd.put("PRODUCTSTATUS", 1);
-		pd.put("BAK10", "");	//备注预留字段
 		productsService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -174,6 +176,44 @@ public class ProductsController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		PageData pdimg = new PageData();
+		pdimg.put("PRODUCTID", pd.getString("PRODUCTS_ID"));
+		// 根据商品的id获取商品下所有图片
+		List<PageData> imgList = imgsService.listAll(pdimg);
+		Integer type;
+		String path;
+		String path3 = "";
+		PageData path3Pd = null;
+		for (PageData pageData : imgList) {
+			path3Pd = pageData;
+			type = (Integer) pageData.get("TYPE");
+			path = pageData.getString("PATH");// 从数据库中查出的path
+			if(1 == type) {
+				if(path != pd.getString("path1")) {// path1发生修改
+					pageData.put("PATH", pd.getString("path1"));
+					imgsService.edit(pageData);
+				}
+			}
+			if(2 == type) {
+				if(path != pd.getString("path2")) { // path2发生修改
+					pageData.put("PATH", pd.getString("path2"));
+					imgsService.edit(pageData);
+				}
+			}
+			if(3 == type) {
+				path3 = path3 + path + ";";
+			}
+			
+		}
+		if(path3.substring(0, path3.length()-1) != pd.getString("path3")){// path3发生修改
+			// 分次保存
+			String[] path3s = pd.getString("path3").split(";");
+			for (String p3 : path3s) {
+				path3Pd.put("path3", p3);
+				imgsService.edit(path3Pd);
+			}
+		}
+		// 判断图片是否修改
 		productsService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -223,16 +263,22 @@ public class ProductsController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		PageData pddiction = new PageData();
+		PageData mPd = new PageData();
+		// shiro管理的session
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
 		pddiction.put("PARENT_ID", "d39e791f50b64fbe93a4d8d0d85fdb57");
+		mPd.put("MERCHANT_ID", user.getBZ());
 		try {
-			List<PageData> merchList = merchantService.listAll(pd);
-			List<PageData> userList = userService.listAllUser(pd);
+			mPd = merchantService.findById(mPd);
+			pd.put("PHONE", mPd.getString("MERCHANT_PHONE"));
+			pd.put("QQ", mPd.getString("MERCHANT_QQ"));
+			// List<PageData> userList = userService.listAllUser(pd);
 			List<PageData> dictList = dictionariesService.ListAllDict(pddiction);
 			mv.setViewName("system/products/products_edit");
 			mv.addObject("msg", "save");
 			mv.addObject("pd", pd);
-			mv.addObject("merchList", merchList);
-			mv.addObject("userList", userList);
 			mv.addObject("dictList", dictList);
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
@@ -255,8 +301,6 @@ public class ProductsController extends BaseController {
 		pdImgs.put("PRODUCTID", pd.getString("PRODUCTS_ID"));
 		try {
 			pd = productsService.findById(pd);	//根据ID读取
-			List<PageData> merchList = merchantService.listAll(pd);
-			List<PageData> userList = userService.listAllUser(pd);
 			List<PageData> dictList = dictionariesService.ListAllDict(pddiction);
 			// 查询商品下的图片列表
 			List<PageData> imgList = imgsService.listAll(pdImgs);
@@ -284,8 +328,6 @@ public class ProductsController extends BaseController {
 			mv.setViewName("system/products/products_edit");
 			mv.addObject("msg", "edit");
 			mv.addObject("pd", pd);
-			mv.addObject("merchList", merchList);
-			mv.addObject("userList", userList);
 			mv.addObject("dictList", dictList);
 		} catch (Exception e) {
 			logger.error(e.toString(), e);

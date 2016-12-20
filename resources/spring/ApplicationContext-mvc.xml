@@ -32,6 +32,7 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/**/**"/>
 			<mvc:exclude-mapping path="/orders/save.do"/>
+			<mvc:exclude-mapping path="/sms/**"/><!-- 短信上行同步 获取回复信息 -->
 			<mvc:exclude-mapping path="/html/**/**"/>
 			<bean class="com.fh.interceptor.LoginHandlerInterceptor"/>
 		</mvc:interceptor>
